@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>广交会新能源展商拜访登记</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #1a5f3f;
+            --primary-light: #2d8a5e;
+            --accent: #f59e0b;
+            --bg: #f5f5f0;
+            --card: #ffffff;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 20px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .header-stats {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            opacity: 0.95;
+        }
+        
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .stat-number {
+            font-weight: 700;
+            font-size: 16px;
+        }
+        
+        .search-bar {
+            padding: 12px 16px;
+            background: white;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 80px;
+            z-index: 99;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            background: var(--bg);
+            outline: none;
+        }
+        
+        .search-input:focus {
+            border-color: var(--primary);
+            background: white;
+        }
+        
+        .company-list {
+            padding: 12px 16px;
+        }
+        
+        .company-card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--border);
+            transition: all 0.2s;
+        }
+        
+        .company-card.touched {
+            border-left-color: var(--success);
+        }
+        
+        .company-card.has-demand {
+            border-left-color: var(--accent);
+        }
+        
+        .company-header {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .company-number {
+            background: var(--primary);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .company-info {
+            flex: 1;
+        }
+        
+        .company-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+        
+        .company-booth {
+            font-size: 12px;
+            color: var(--text-light);
+            background: var(--bg);
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .action-btn {
+            padding: 10px 4px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: white;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-align: center;
+            user-select: none;
+        }
+        
+        .action-btn:active {
+            transform: scale(0.96);
+        }
+        
+        .action-btn.active {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+        
+        .action-btn.wechat.active {
+            background: #07c160;
+            border-color: #07c160;
+        }
+        
+        .action-btn.keyperson.active {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+        
+        .rating-section {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .rating-label {
+            font-size: 13px;
+            color: var(--text-light);
+            white-space: nowrap;
+        }
+        
+        .rating-options {
+            display: flex;
+            gap: 6px;
+            flex: 1;
+        }
+        
+        .rating-btn {
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            background: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        
+        .rating-btn:active {
+            transform: scale(0.9);
+        }
+        
+        .rating-btn.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .rating-btn.a.selected { background: #ef4444; border-color: #ef4444; }
+        .rating-btn.b.selected { background: #f59e0b; border-color: #f59e0b; }
+        .rating-btn.c.selected { background: #3b82f6; border-color: #3b82f6; }
+        .rating-btn.d.selected { background: #6b7280; border-color: #6b7280; }
+        
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 12px 16px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.15s;
+            text-align: center;
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+        
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+        
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        
+        .toast.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🌱 广交会新能源展商拜访登记</h1>
+        <div class="header-stats">
+            <div class="stat">
+                <span>已触达:</span>
+                <span class="stat-number" id="stat-touched">0</span>
+            </div>
+            <div class="stat">
+                <span>有需求:</span>
+                <span class="stat-number" id="stat-demand">0</span>
+            </div>
+            <div class="stat">
+                <span>加微:</span>
+                <span class="stat-number" id="stat-wechat">0</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="search-bar">
+        <input type="text" class="search-input" id="searchInput" placeholder="搜索公司名或展位号...">
+    </div>
+    
+    <div class="company-list" id="companyList"></div>
+    
+    <div class="bottom-bar">
+        <button class="btn btn-secondary" onclick="resetData()">重置</button>
+        <button class="btn btn-primary" onclick="exportData()">导出数据</button>
+    </div>
+    
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const companies = [
+            {id: 1, name: "深圳市华宝新能源股份有限公司", note: "户外电源巨头，Jackery", booth: "15.2G35-37 / 15.2I33-38"},
+            {id: 2, name: "深圳市德兰明海新能源股份有限公司", note: "储能品牌，Bluetti", booth: "15.2I13-14 / 15.2F36-37"},
+            {id: 3, name: "天能电池集团股份有限公司", note: "铅酸/锂电出口大户", booth: "15.2E34-35 / 15.2F10-11"},
+            {id: 4, name: "深圳市华思旭科技有限公司", note: "卡儿酷，应急启动电源领导者", booth: "15.2G13-14"},
+            {id: 5, name: "深圳市格瑞普电池有限公司", note: "特种锂电/模型电池", booth: "15.2G23-24"},
+            {id: 6, name: "超威电源集团有限公司", note: "动力及储能电池", booth: "15.2D36-38"},
+            {id: 7, name: "广东志成冠军集团有限公司", note: "UPS电源及大容量储能", booth: "15.2E43-44 / 15.2F01-02"},
+            {id: 8, name: "深圳市朗泰通电子有限公司", note: "磷酸铁锂电池/储能", booth: "15.2H13-14"},
+            {id: 9, name: "肇庆理士电源技术有限公司", note: "理士电池，国际化老牌企业", booth: "15.2G09-10"},
+            {id: 10, name: "江苏海四达电源有限公司", note: "电动工具/储能电池", booth: "15.2I15-16"},
+            {id: 11, name: "厦门海辰储能科技股份有限公司", note: "大型电网/工商业储能", booth: "15.2I17-18"},
+            {id: 12, name: "东莞/厦门新能安科技有限公司", note: "Ampace，高端锂电应用", booth: "15.2I21-24"},
+            {id: 13, name: "浙江南都电源动力股份有限公司", note: "工业及基站储能", booth: "15.2G11-12 / 15.2I29-30"},
+            {id: 14, name: "上海派能能源科技股份有限公司", note: "家储领域出口前茅", booth: "15.2I32-33 / 15.2J12-13"},
+            {id: 15, name: "深圳市英威腾电气股份有限公司", note: "工控及新能源车零部件", booth: "15.2B34-36 / 15.2C08-10"},
+            {id: 16, name: "利欧集团浙江泵业有限公司", note: "通用机械/水泵出口大户", booth: "14.2G32-33 / 14.2H12-13"},
+            {id: 17, name: "浙江天能储能科技发展有限公司", note: "储能系统集成", booth: "15.2H09-10"},
+            {id: 18, name: "深圳易能时代科技有限公司", note: "充电桩/高压快充系统", booth: "15.2G33-34 / 15.2I31-32"},
+            {id: 19, name: "广东电将军能源有限公司", note: "移动储能/高倍率电池", booth: "15.2B37-39"},
+            {id: 20, name: "深圳市卡儿酷科技股份有限公司", note: "多功能移动电源", booth: "14.2E34-35 / 14.2F10-11"},
+            {id: 21, name: "东莞市锂智慧能源有限公司", note: "磷酸铁锂电池模组", booth: "15.2E40-41 / 15.2F04-05"},
+            {id: 22, name: "首帆动力科技股份有限公司", note: "移动发电机组/储能机组", booth: "15.2D33-35 / 15.2E09-11"},
+            {id: 23, name: "浙江万向太阳能有限公司", note: "储能电池及组件出口较多", booth: "14.2G20"},
+            {id: 24, name: "浙江东音科技有限公司", note: "井用潜水泵", booth: "14.2A09-11 / 14.2B12-14"},
+            {id: 25, name: "浙江泰福泵业股份有限公司", note: "各类水泵出口", booth: "14.2C30-31 / 14.2D12-13"},
+            {id: 26, name: "广东瑞荣泵业有限公司", note: "深井泵出口美国", booth: "14.2B07-08"},
+            {id: 27, name: "江苏苏美达机电有限公司", note: "通用设备/园林机械", booth: "14.2F29-30 / 14.2E31-32"},
+            {id: 28, name: "衡阳瑞达电源有限公司", note: "密封铅酸蓄电池", booth: "15.2C36-37 / 14.2D06-07"},
+            {id: 29, name: "深圳硕日新能科技股份有限公司", note: "储能控制器", booth: "14.2C06-07"},
+            {id: 30, name: "广州西奥多科技有限公司", note: "空气能/风幕机", booth: "14.2I21"},
+            {id: 31, name: "孚瑞肯电气（深圳）有限公司", note: "变频器/工业控制", booth: "14.2H14-15"},
+            {id: 32, name: "广东凯捷电源有限公司", note: "摩托车电池/小容量铅酸", booth: "15.2J01-03"},
+            {id: 33, name: "九钢实业（天津）有限公司", note: "新能源配套钢材/支架", booth: "14.2H41-42"},
+            {id: 34, name: "嘉兴沃尔奇电器股份有限公司", note: "家用新能源配套电器", booth: "14.2I41"},
+            {id: 35, name: "艺唯科技股份有限公司", note: "健康运动器材新能源方案", booth: "14.2F41"},
+            {id: 36, name: "山克新能源科技（深圳）有限公司", note: "UPS电源出口", booth: "14.2E08-09"},
+            {id: 37, name: "大秦数字能源技术股份有限公司", note: "Dyness 品牌家储", booth: "14.2E06-07"},
+            {id: 38, name: "江苏海宝电池科技有限公司", note: "电动助力车电池", booth: "15.2H25-30"},
+            {id: 39, name: "浙江天宏锂电股份有限公司", note: "定制化锂电包", booth: "15.2H21-24"},
+            {id: 40, name: "南京欧陆电气股份有限公司", note: "新能源控制器/小型风机", booth: "15.2J05"}
+        ];
+        
+        let data = {};
+        
+        function loadData() {
+            const saved = localStorage.getItem('cantonFairData');
+            if (saved) {
+                data = JSON.parse(saved);
+            }
+        }
+        
+        function saveData() {
+            localStorage.setItem('cantonFairData', JSON.stringify(data));
+            updateStats();
+        }
+        
+        function updateStats() {
+            let touched = 0, demand = 0, wechat = 0;
+            Object.values(data).forEach(d => {
+                if (d.touched) touched++;
+                if (d.demand) demand++;
+                if (d.wechat) wechat++;
+            });
+            document.getElementById('stat-touched').textContent = touched;
+            document.getElementById('stat-demand').textContent = demand;
+            document.getElementById('stat-wechat').textContent = wechat;
+        }
+        
+        function toggleField(id, field) {
+            if (!data[id]) data[id] = {};
+            data[id][field] = !data[id][field];
+            saveData();
+            renderList();
+        }
+        
+        function setRating(id, rating) {
+            if (!data[id]) data[id] = {};
+            data[id].rating = data[id].rating === rating ? null : rating;
+            saveData();
+            renderList();
+        }
+        
+        function renderList() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const list = document.getElementById('companyList');
+            
+            const filtered = companies.filter(c => 
+                c.name.toLowerCase().includes(search) || 
+                c.booth.toLowerCase().includes(search) ||
+                c.note.toLowerCase().includes(search)
+            );
+            
+            if (filtered.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"/>
+                            <path d="m21 21-4.35-4.35"/>
+                        </svg>
+                        <p>没有找到匹配的公司</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            list.innerHTML = filtered.map(c => {
+                const d = data[c.id] || {};
+                const cardClass = d.touched ? 'touched' : '';
+                const demandClass = d.demand ? 'has-demand' : '';
+                
+                return `
+                    <div class="company-card ${cardClass} ${demandClass}">
+                        <div class="company-header">
+                            <div class="company-number">${c.id}</div>
+                            <div class="company-info">
+                                <div class="company-name">${c.name}</div>
+                                <div class="company-booth">${c.booth} · ${c.note}</div>
+                            </div>
+                        </div>
+                        <div class="actions-grid">
+                            <button class="action-btn ${d.touched ? 'active' : ''}" onclick="toggleField(${c.id}, 'touched')">
+                                ${d.touched ? '✓' : ''} 触达
+                            </button>
+                            <button class="action-btn ${d.demand ? 'active' : ''}" onclick="toggleField(${c.id}, 'demand')">
+                                ${d.demand ? '✓' : ''} 有需求
+                            </button>
+                            <button class="action-btn keyperson ${d.keyperson ? 'active' : ''}" onclick="toggleField(${c.id}, 'keyperson')">
+                                ${d.keyperson ? '★' : ''} 关键人
+                            </button>
+                            <button class="action-btn wechat ${d.wechat ? 'active' : ''}" onclick="toggleField(${c.id}, 'wechat')">
+                                ${d.wechat ? '✓' : ''} 加微
+                            </button>
+                        </div>
+                        <div class="rating-section">
+                            <span class="rating-label">评级:</span>
+                            <div class="rating-options">
+                                <button class="rating-btn a ${d.rating === 'A' ? 'selected' : ''}" onclick="setRating(${c.id}, 'A')">A</button>
+                                <button class="rating-btn b ${d.rating === 'B' ? 'selected' : ''}" onclick="setRating(${c.id}, 'B')">B</button>
+                                <button class="rating-btn c ${d.rating === 'C' ? 'selected' : ''}" onclick="setRating(${c.id}, 'C')">C</button>
+                                <button class="rating-btn d ${d.rating === 'D' ? 'selected' : ''}" onclick="setRating(${c.id}, 'D')">D</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+        
+        function resetData() {
+            if (confirm('确定要清空所有登记数据吗？')) {
+                data = {};
+                localStorage.removeItem('cantonFairData');
+                updateStats();
+                renderList();
+                showToast('数据已重置');
+            }
+        }
+        
+        function exportData() {
+            const rows = companies.map(c => {
+                const d = data[c.id] || {};
+                return {
+                    序号: c.id,
+                    公司名称: c.name,
+                    展位号: c.booth,
+                    备注: c.note,
+                    是否触达: d.touched ? '是' : '否',
+                    是否有需求: d.demand ? '是' : '否',
+                    是否关键人: d.keyperson ? '是' : '否',
+                    是否加微: d.wechat ? '是' : '否',
+                    评级: d.rating || ''
+                };
+            });
+            
+            if (rows.length === 0) {
+                showToast('没有数据可导出');
+                return;
+            }
+            
+            const headers = Object.keys(rows[0]);
+            const csv = [
+                headers.join(','),
+                ...rows.map(r => headers.map(h => {
+                    const val = r[h] || '';
+                    return val.includes(',') ? `"${val}"` : val;
+                }).join(','))
+            ].join('\n');
+            
+            const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `广交会新能源拜访记录_${new Date().toLocaleDateString()}.csv`;
+            link.click();
+            
+            showToast('导出成功');
+        }
+        
+        document.getElementById('searchInput').addEventListener('input', renderList);
+        
+        loadData();
+        updateStats();
+        renderList();
+    </script>
+</body>
+</html>
