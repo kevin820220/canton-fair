@@ -1,900 +1,182 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>鲸宝 × 广交会新能源展商登记</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
-
-    :root {
-      --bg: #0a0e13;
-      --surface: #111720;
-      --card: #162030;
-      --card-hover: #1c2a3a;
-      --accent: #00d084;
-      --accent-dim: rgba(0, 208, 132, 0.15);
-      --accent2: #3d9eff;
-      --text: #e8eaf0;
-      --text-muted: #6b7a90;
-      --text-dim: #3d4a5c;
-      --border: rgba(255,255,255,0.07);
-      --shadow: 0 8px 32px rgba(0,0,0,0.4);
-      --radius: 16px;
-      --radius-sm: 10px;
-      --tag-green: #1a3a2a;
-      --tag-yellow: #3a2e0a;
-      --tag-blue: #1a2a3a;
-      --red: #ff4d6a;
-      --amber: #ffb340;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
-    body {
-      font-family: 'Noto Sans SC', -apple-system, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100dvh;
-      padding-bottom: 100px;
-    }
-
-    /* Header */
-    .header {
-      background: linear-gradient(165deg, #0d1825 0%, #0a1018 100%);
-      padding: env(safe-area-inset-top) 20px 20px;
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      backdrop-filter: blur(20px);
-    }
-
-    .header-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .logo-icon {
-      width: 36px;
-      height: 36px;
-      background: var(--accent);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-    }
-
-    .logo-text {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text);
-    }
-
-    .logo-text span {
-      color: var(--accent);
-    }
-
-    .header-date {
-      font-size: 12px;
-      color: var(--text-muted);
-      background: var(--surface);
-      padding: 4px 10px;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-    }
-
-    /* Progress Stats */
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-    }
-
-    .stat-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 10px 8px;
-      text-align: center;
-    }
-
-    .stat-num {
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--accent);
-      line-height: 1;
-      margin-bottom: 4px;
-    }
-
-    .stat-num.blue { color: var(--accent2); }
-    .stat-num.amber { color: var(--amber); }
-    .stat-num.red { color: var(--red); }
-
-    .stat-label {
-      font-size: 10px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    /* Filter Tabs */
-    .filter-bar {
-      display: flex;
-      gap: 6px;
-      padding: 14px 20px 6px;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-    .filter-bar::-webkit-scrollbar { display: none; }
-
-    .filter-btn {
-      flex-shrink: 0;
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 500;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .filter-btn.active {
-      background: var(--accent-dim);
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    .filter-btn .count {
-      display: inline-block;
-      margin-left: 4px;
-      font-size: 11px;
-      opacity: 0.7;
-    }
-
-    /* Company List */
-    .company-list {
-      padding: 8px 16px 20px;
-    }
-
-    .company-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      margin-bottom: 12px;
-      overflow: hidden;
-      transition: all 0.25s;
-    }
-
-    .company-card.visited {
-      border-color: rgba(0, 208, 132, 0.3);
-    }
-
-    .company-main {
-      padding: 16px;
-      cursor: pointer;
-    }
-
-    .company-top {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 10px;
-    }
-
-    .company-index {
-      flex-shrink: 0;
-      width: 32px;
-      height: 32px;
-      background: var(--accent-dim);
-      border: 1px solid rgba(0,208,132,0.3);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--accent);
-    }
-
-    .company-card.visited .company-index {
-      background: rgba(0,208,132,0.2);
-    }
-
-    .company-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .company-name {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 4px;
-      line-height: 1.3;
-    }
-
-    .company-booth {
-      font-size: 12px;
-      color: var(--accent2);
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .company-tags {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .tag {
-      font-size: 11px;
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-weight: 500;
-    }
-
-    .tag-priority {
-      background: rgba(255, 77, 106, 0.15);
-      color: var(--red);
-      border: 1px solid rgba(255,77,106,0.3);
-    }
-
-    .tag-storage {
-      background: rgba(61, 154, 255, 0.12);
-      color: var(--accent2);
-      border: 1px solid rgba(61,154,255,0.25);
-    }
-
-    .tag-pump {
-      background: rgba(255, 179, 64, 0.12);
-      color: var(--amber);
-      border: 1px solid rgba(255,179,64,0.25);
-    }
-
-    .tag-ups {
-      background: rgba(150, 100, 255, 0.12);
-      color: #c49fff;
-      border: 1px solid rgba(150,100,255,0.25);
-    }
-
-    .tag-battery {
-      background: rgba(255, 160, 60, 0.12);
-      color: #ffa03c;
-      border: 1px solid rgba(255,160,60,0.25);
-    }
-
-    .tag-ev {
-      background: rgba(0, 208, 132, 0.12);
-      color: var(--accent);
-      border: 1px solid rgba(0,208,132,0.25);
-    }
-
-    .company-meta {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .visit-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 11px;
-      padding: 3px 8px;
-      border-radius: 6px;
-      background: var(--accent-dim);
-      color: var(--accent);
-      border: 1px solid rgba(0,208,132,0.3);
-    }
-
-    .visit-badge.unvisited {
-      background: rgba(107,122,144,0.15);
-      color: var(--text-muted);
-      border-color: var(--border);
-    }
-
-    /* Expanded Form */
-    .company-form {
-      display: none;
-      padding: 0 16px 16px;
-      border-top: 1px solid var(--border);
-    }
-
-    .company-card.open .company-form {
-      display: block;
-    }
-
-    .form-row {
-      margin-top: 12px;
-    }
-
-    .form-label {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-      font-weight: 500;
-    }
-
-    .form-toggle-group {
-      display: flex;
-      gap: 6px;
-    }
-
-    .toggle-btn {
-      flex: 1;
-      padding: 8px 6px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 500;
-      text-align: center;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .toggle-btn.selected-yes {
-      background: rgba(0, 208, 132, 0.2);
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    .toggle-btn.selected-no {
-      background: rgba(255, 77, 106, 0.15);
-      border-color: var(--red);
-      color: var(--red);
-    }
-
-    .toggle-btn.selected-maybe {
-      background: rgba(255, 179, 64, 0.15);
-      border-color: var(--amber);
-      color: var(--amber);
-    }
-
-    /* Rating Stars */
-    .rating-group {
-      display: flex;
-      gap: 6px;
-    }
-
-    .star-btn {
-      flex: 1;
-      padding: 8px 4px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      text-align: center;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .star-btn.selected {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    .star-btn.s1.selected { background: rgba(255,77,106,0.15); border-color: var(--red); color: var(--red); }
-    .star-btn.s2.selected { background: rgba(255,179,64,0.15); border-color: var(--amber); color: var(--amber); }
-    .star-btn.s3.selected { background: rgba(61,154,255,0.15); border-color: var(--accent2); color: var(--accent2); }
-    .star-btn.s4.selected { background: rgba(0,208,132,0.2); border-color: var(--accent); color: var(--accent); }
-    .star-btn.s5.selected { background: rgba(0,208,132,0.3); border-color: var(--accent); color: #00ffaa; }
-
-    .form-notes {
-      width: 100%;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      color: var(--text);
-      font-size: 13px;
-      font-family: inherit;
-      padding: 10px 12px;
-      resize: none;
-      outline: none;
-      min-height: 60px;
-      transition: border-color 0.2s;
-    }
-
-    .form-notes:focus {
-      border-color: var(--accent);
-    }
-
-    .form-notes::placeholder {
-      color: var(--text-dim);
-    }
-
-    .save-btn {
-      width: 100%;
-      margin-top: 10px;
-      padding: 12px;
-      background: var(--accent);
-      color: #000;
-      font-size: 15px;
-      font-weight: 700;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-family: inherit;
-      transition: all 0.2s;
-    }
-
-    .save-btn:active {
-      transform: scale(0.97);
-      opacity: 0.85;
-    }
-
-    /* WeChat Add Prompt */
-    .wechat-field {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .wechat-input {
-      flex: 1;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text);
-      font-size: 13px;
-      font-family: inherit;
-      padding: 8px 12px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .wechat-input:focus { border-color: var(--accent); }
-    .wechat-input::placeholder { color: var(--text-dim); }
-
-    .wechat-badge {
-      font-size: 11px;
-      padding: 3px 8px;
-      border-radius: 6px;
-      background: rgba(0, 208, 132, 0.15);
-      color: var(--accent);
-      border: 1px solid rgba(0,208,132,0.3);
-      white-space: nowrap;
-    }
-
-    .wechat-badge.pending {
-      background: rgba(107,122,144,0.15);
-      color: var(--text-muted);
-      border-color: var(--border);
-    }
-
-    /* Floating Action */
-    .fab {
-      position: fixed;
-      bottom: 24px;
-      right: 20px;
-      left: 20px;
-      z-index: 200;
-      pointer-events: none;
-    }
-
-    .fab-inner {
-      background: var(--accent);
-      color: #000;
-      padding: 14px 24px;
-      border-radius: 14px;
-      font-size: 15px;
-      font-weight: 700;
-      text-align: center;
-      box-shadow: 0 4px 20px rgba(0,208,132,0.4);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      pointer-events: all;
-      transition: all 0.2s;
-    }
-
-    .fab-inner:active {
-      transform: scale(0.97);
-      opacity: 0.9;
-    }
-
-    /* Slide animation */
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .company-card.open .company-main {
-      animation: none;
-    }
-
-    /* Empty state */
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: var(--text-muted);
-    }
-
-    .empty-state .icon {
-      font-size: 48px;
-      margin-bottom: 16px;
-    }
-
-    .empty-state h3 {
-      font-size: 16px;
-      margin-bottom: 8px;
-      color: var(--text);
-    }
-
-    .empty-state p {
-      font-size: 13px;
-    }
-
-    /* Section headers in list */
-    .section-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 16px 16px 8px;
-      font-size: 12px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 600;
-    }
-
-    .section-header::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-
-    /* Card open state */
-    .company-card.open {
-      background: var(--card-hover);
-      border-color: rgba(0,208,132,0.3);
-    }
-
-    .chevron {
-      transition: transform 0.2s;
-      color: var(--text-dim);
-      font-size: 14px;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-
-    .company-card.open .chevron {
-      transform: rotate(180deg);
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>14.3馆拜访登记</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --g:#00a653;--g2:#008c45;--amber:#f59e0b;--amber2:#d97706;
+  --bg:#f0f7f2;--card:#fff;--txt:#1a1a1a;--sub:#666;--bd:#e2e8ec;
+  --green:#10b981;--blue:#3b82f6;--red:#ef4444;--gray:#6b7280;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;padding-bottom:90px}
+#stats{position:sticky;top:0;z-index:50;background:var(--g);color:#fff;padding:14px 16px 12px;box-shadow:0 2px 12px rgba(0,0,0,.18)}
+.stats-row{display:flex;gap:10px}
+.stat-item{flex:1;background:rgba(255,255,255,.18);border-radius:10px;padding:8px 6px;text-align:center;backdrop-filter:blur(4px)}
+.stat-item .num{font-size:22px;font-weight:700;line-height:1}
+.stat-item .lbl{font-size:11px;opacity:.85;margin-top:2px}
+#search{padding:10px 14px;background:#fff;border-bottom:1px solid var(--bd);position:sticky;top:72px;z-index:49}
+#search input{width:100%;padding:10px 14px;border:1.5px solid var(--bd);border-radius:10px;font-size:15px;background:var(--bg);outline:none;transition:border .2s}
+#search input:focus{border-color:var(--g);background:#fff}
+#list{padding:10px 12px}
+.company-card{background:var(--card);border-radius:14px;margin-bottom:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06);border:2px solid transparent;transition:all .2s}
+.company-card.touched{border-color:var(--green)}
+.company-card.hot{border-color:var(--amber);box-shadow:0 2px 14px rgba(245,158,11,.28)}
+.card-header{display:flex;align-items:flex-start;gap:10px;padding:13px 14px 10px}
+.rank-badge{flex-shrink:0;width:34px;height:34px;background:var(--g);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;line-height:1}
+.company-card.hot .rank-badge{background:var(--amber)}
+.card-body{flex:1;overflow:hidden}
+.cn-name{font-size:15px;font-weight:600;line-height:1.35;margin-bottom:5px;color:var(--txt)}
+.booth-tag{display:inline-flex;align-items:center;font-size:12px;color:var(--g);background:#e8f8ee;padding:3px 8px;border-radius:20px;font-weight:600;margin-bottom:5px}
+.company-card.hot .booth-tag{color:var(--amber2);background:#fef3c7}
+.meta{display:flex;flex-wrap:wrap;gap:5px;font-size:12px;color:var(--sub)}
+.meta span{background:#f5f5f5;padding:2px 7px;border-radius:4px}
+.teu-badge{background:#fff7ed!important;color:var(--amber2)!important;font-weight:600!important;border:1px solid #fed7aa!important}
+.actions{padding:0 14px 12px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.btn-act{min-height:44px;border:1.5px solid var(--bd);border-radius:9px;background:#fff;font-size:12px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:4px 2px;color:var(--txt);font-weight:500}
+.btn-act:active{transform:scale(.93)}
+.btn-act.on1{background:var(--green);color:#fff;border-color:var(--green)}
+.btn-act.on2{background:var(--amber);color:#fff;border-color:var(--amber)}
+.btn-act.on3{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn-act.on4{background:#07c160;color:#fff;border-color:#07c160}
+.btn-act .b-icon{font-size:17px;line-height:1}
+.btn-act .b-lbl{font-size:11px}
+.rating{padding:0 14px 13px;display:flex;align-items:center;gap:8px}
+.rating label{font-size:13px;color:var(--sub);white-space:nowrap}
+.rating-btns{display:flex;gap:6px;flex:1}
+.rtag{width:38px;height:38px;border-radius:50%;border:2px solid var(--bd);background:#fff;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;color:var(--txt)}
+.rtag:active{transform:scale(.88)}
+.rtag.sel{color:#fff}
+.rtag.a.sel{background:var(--red);border-color:var(--red)}
+.rtag.b.sel{background:var(--amber);border-color:var(--amber)}
+.rtag.c.sel{background:var(--blue);border-color:var(--blue)}
+.rtag.d.sel{background:var(--gray);border-color:var(--gray)}
+#bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--bd);padding:10px 14px;display:flex;gap:10px;z-index:50;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+#bottom .btn{flex:1;padding:14px;border-radius:12px;font-size:15px;font-weight:700;border:none;cursor:pointer;text-align:center;transition:all .15s}
+#bottom .btn:active{transform:scale(.97)}
+.btn-ghost{background:var(--bg);color:var(--txt)}
+.btn-main{background:var(--g);color:#fff;box-shadow:0 4px 14px rgba(0,166,83,.35)}
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.75);color:#fff;padding:12px 22px;border-radius:10px;font-size:14px;z-index:200;pointer-events:none;opacity:0;transition:opacity .25s}
+.toast.show{opacity:1}
+.empty{padding:60px 20px;text-align:center;color:var(--sub)}
+@media(min-width:600px){#list{max-width:500px;margin:0 auto}} 
+</style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-top">
-    <div class="logo">
-      <div class="logo-icon">🐋</div>
-      <div class="logo-text">鲸宝<span>·</span>展商登记</div>
-    </div>
-    <div class="header-date" id="today"></div>
-  </div>
-  <div class="stats">
-    <div class="stat-card">
-      <div class="stat-num" id="stat-total">40</div>
-      <div class="stat-label">目标展商</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-num blue" id="stat-reached">0</div>
-      <div class="stat-label">已触达</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-num amber" id="stat-needs">0</div>
-      <div class="stat-label">有意向</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-num" id="stat-wechat">0</div>
-      <div class="stat-label">已加微</div>
-    </div>
+<div id="stats">
+  <div class="stats-row">
+    <div class="stat-item"><div class="num" id="s-t">0</div><div class="lbl">已触达</div></div>
+    <div class="stat-item"><div class="num" id="s-d">0</div><div class="lbl">有需求</div></div>
+    <div class="stat-item"><div class="num" id="s-k">0</div><div class="lbl">关键人</div></div>
+    <div class="stat-item"><div class="num" id="s-w">0</div><div class="lbl">加微</div></div>
   </div>
 </div>
 
-<div class="filter-bar">
-  <button class="filter-btn active" data-filter="all">全部 <span class="count" id="cnt-all">40</span></button>
-  <button class="filter-btn" data-filter="unvisited">未触达 <span class="count" id="cnt-unvisited">40</span></button>
-  <button class="filter-btn" data-filter="reached">已触达 <span class="count" id="cnt-reached">0</span></button>
-  <button class="filter-btn" data-filter="needs">有意向 <span class="count" id="cnt-needs">0</span></button>
-  <button class="filter-btn" data-filter="starred">三星以上 <span class="count" id="cnt-starred">0</span></button>
+<div id="search">
+  <input type="text" id="kw" placeholder="搜索公司名 / 展位 / 品名" />
 </div>
 
-<div class="company-list" id="company-list"></div>
+<div id="list"></div>
 
-<div class="fab">
-  <div class="fab-inner" id="export-btn">
-    📤 导出今日记录
-  </div>
+<div id="bottom">
+  <button class="btn btn-ghost" onclick="resetAll()">重置</button>
+  <button class="btn btn-main" onclick="doExport()">导出CSV</button>
 </div>
+
+<div class="toast" id="toast"></div>
 
 <script>
-const companies = [
-  { id: 1, name: "深圳市华宝新能源股份有限公司", alias: "Jackery", booth: "15.2G35-37 / 15.2I33-38", tag: "tag-ev", tagLabel: "户外电源", priority: 1, hall: "15.2" },
-  { id: 2, name: "深圳市德兰明海新能源股份有限公司", alias: "Bluetti", booth: "15.2I13-14 / 15.2F36-37", tag: "tag-storage", tagLabel: "储能", priority: 1, hall: "15.2" },
-  { id: 3, name: "天能电池集团股份有限公司", alias: "", booth: "15.2E34-35 / 15.2F10-11", tag: "tag-battery", tagLabel: "铅酸/锂电", priority: 1, hall: "15.2" },
-  { id: 4, name: "深圳市华思旭科技有限公司", alias: "卡儿酷", booth: "15.2G13-14", tag: "tag-ev", tagLabel: "应急电源", priority: 2, hall: "15.2" },
-  { id: 5, name: "深圳市格瑞普电池有限公司", alias: "", booth: "15.2G23-24", tag: "tag-battery", tagLabel: "特种锂电", priority: 2, hall: "15.2" },
-  { id: 6, name: "超威电源集团有限公司", alias: "", booth: "15.2D36-38", tag: "tag-battery", tagLabel: "动力储能", priority: 2, hall: "15.2" },
-  { id: 7, name: "广东志成冠军集团有限公司", alias: "", booth: "15.2E43-44 / 15.2F01-02", tag: "tag-ups", tagLabel: "UPS电源", priority: 2, hall: "15.2" },
-  { id: 8, name: "深圳市朗泰通电子有限公司", alias: "", booth: "15.2H13-14", tag: "tag-storage", tagLabel: "磷酸铁锂", priority: 2, hall: "15.2" },
-  { id: 9, name: "肇庆理士电源技术有限公司", alias: "理士电池", booth: "15.2G09-10", tag: "tag-battery", tagLabel: "蓄电池", priority: 2, hall: "15.2" },
-  { id: 10, name: "江苏海四达电源有限公司", alias: "", booth: "15.2I15-16", tag: "tag-battery", tagLabel: "电动工具/储能", priority: 2, hall: "15.2" },
-  { id: 11, name: "厦门海辰储能科技股份有限公司", alias: "", booth: "15.2I17-18", tag: "tag-storage", tagLabel: "大型储能", priority: 1, hall: "15.2" },
-  { id: 12, name: "东莞/厦门新能安科技有限公司", alias: "Ampace", booth: "15.2I21-24", tag: "tag-storage", tagLabel: "高端锂电", priority: 1, hall: "15.2" },
-  { id: 13, name: "浙江南都电源动力股份有限公司", alias: "", booth: "15.2G11-12 / 15.2I29-30", tag: "tag-storage", tagLabel: "工业储能", priority: 2, hall: "15.2" },
-  { id: 14, name: "上海派能能源科技股份有限公司", alias: "", booth: "15.2I32-33 / 15.2J12-13", tag: "tag-storage", tagLabel: "家储出口", priority: 1, hall: "15.2" },
-  { id: 15, name: "深圳市英威腾电气股份有限公司", alias: "", booth: "15.2B34-36 / 15.2C08-10", tag: "tag-ev", tagLabel: "新能源车", priority: 2, hall: "15.2" },
-  { id: 16, name: "利欧集团浙江泵业有限公司", alias: "", booth: "14.2G32-33 / 14.2H12-13", tag: "tag-pump", tagLabel: "水泵出口", priority: 2, hall: "14.2" },
-  { id: 17, name: "浙江天能储能科技发展有限公司", alias: "", booth: "15.2H09-10", tag: "tag-storage", tagLabel: "储能系统", priority: 2, hall: "15.2" },
-  { id: 18, name: "深圳易能时代科技有限公司", alias: "", booth: "15.2G33-34 / 15.2I31-32", tag: "tag-ev", tagLabel: "充电桩", priority: 2, hall: "15.2" },
-  { id: 19, name: "广东电将军能源有限公司", alias: "", booth: "15.2B37-39", tag: "tag-ev", tagLabel: "移动储能", priority: 2, hall: "15.2" },
-  { id: 20, name: "深圳市卡儿酷科技股份有限公司", alias: "", booth: "14.2E34-35 / 14.2F10-11", tag: "tag-ev", tagLabel: "移动电源", priority: 2, hall: "14.2" },
-  { id: 21, name: "东莞市锂智慧能源有限公司", alias: "", booth: "15.2E40-41 / 15.2F04-05", tag: "tag-storage", tagLabel: "磷酸铁锂模组", priority: 2, hall: "15.2" },
-  { id: 22, name: "首帆动力科技股份有限公司", alias: "", booth: "15.2D33-35 / 15.2E09-11", tag: "tag-ev", tagLabel: "移动发电", priority: 2, hall: "15.2" },
-  { id: 23, name: "浙江万向太阳能有限公司", alias: "", booth: "14.2G20", tag: "tag-storage", tagLabel: "储能组件", priority: 2, hall: "14.2" },
-  { id: 24, name: "浙江东音科技有限公司", alias: "", booth: "14.2A09-11 / 14.2B12-14", tag: "tag-pump", tagLabel: "深井泵", priority: 3, hall: "14.2" },
-  { id: 25, name: "浙江泰福泵业股份有限公司", alias: "", booth: "14.2C30-31 / 14.2D12-13", tag: "tag-pump", tagLabel: "水泵出口", priority: 3, hall: "14.2" },
-  { id: 26, name: "广东瑞荣泵业有限公司", alias: "", booth: "14.2B07-08", tag: "tag-pump", tagLabel: "深井泵美国", priority: 3, hall: "14.2" },
-  { id: 27, name: "江苏苏美达机电有限公司", alias: "", booth: "14.2F29-30 / 14.2E31-32", tag: "tag-ev", tagLabel: "园林机械", priority: 3, hall: "14.2" },
-  { id: 28, name: "衡阳瑞达电源有限公司", alias: "", booth: "15.2C36-37 / 14.2D06-07", tag: "tag-battery", tagLabel: "密封铅酸", priority: 3, hall: "15.2" },
-  { id: 29, name: "深圳硕日新能科技股份有限公司", alias: "", booth: "14.2C06-07", tag: "tag-storage", tagLabel: "储能控制器", priority: 3, hall: "14.2" },
-  { id: 30, name: "广州西奥多科技有限公司", alias: "", booth: "14.2I21", tag: "tag-ev", tagLabel: "空气能", priority: 3, hall: "14.2" },
-  { id: 31, name: "孚瑞肯电气（深圳）有限公司", alias: "", booth: "14.2H14-15", tag: "tag-ev", tagLabel: "变频器", priority: 3, hall: "14.2" },
-  { id: 32, name: "广东凯捷电源有限公司", alias: "", booth: "15.2J01-03", tag: "tag-battery", tagLabel: "摩托车电池", priority: 3, hall: "15.2" },
-  { id: 33, name: "九钢实业（天津）有限公司", alias: "", booth: "14.2H41-42", tag: "tag-ev", tagLabel: "新能源钢材", priority: 3, hall: "14.2" },
-  { id: 34, name: "嘉兴沃尔奇电器股份有限公司", alias: "", booth: "14.2I41", tag: "tag-ev", tagLabel: "家用配套", priority: 3, hall: "14.2" },
-  { id: 35, name: "艺唯科技股份有限公司", alias: "", booth: "14.2F41", tag: "tag-ev", tagLabel: "运动器材", priority: 3, hall: "14.2" },
-  { id: 36, name: "山克新能源科技（深圳）有限公司", alias: "", booth: "14.2E08-09", tag: "tag-ups", tagLabel: "UPS出口", priority: 3, hall: "14.2" },
-  { id: 37, name: "大秦数字能源技术股份有限公司", alias: "Dyness", booth: "14.2E06-07", tag: "tag-storage", tagLabel: "家储品牌", priority: 2, hall: "14.2" },
-  { id: 38, name: "江苏海宝电池科技有限公司", alias: "", booth: "15.2H25-30", tag: "tag-battery", tagLabel: "电动车电池", priority: 3, hall: "15.2" },
-  { id: 39, name: "浙江天宏锂电股份有限公司", alias: "", booth: "15.2H21-24", tag: "tag-battery", tagLabel: "定制锂电包", priority: 2, hall: "15.2" },
-  { id: 40, name: "南京欧陆电气股份有限公司", alias: "", booth: "15.2J05", tag: "tag-ev", tagLabel: "新能源控制器", priority: 3, hall: "15.2" },
-];
+const COMPANIES=[{"id": 1, "name": "广东日丰电缆股份有限公司", "booth": "14.3A16-17", "products": "电线电缆、电源线插头", "port": "深圳、南沙", "us_teu": "1,200+ TEU"}, {"id": 2, "name": "浙江泰达微电机有限公司", "booth": "14.3A08-09", "products": "微特电机、清洗机马达", "port": "宁波、上海", "us_teu": "240+ TEU"}, {"id": 3, "name": "杭州鸿世电器股份有限公司", "booth": "14.3A12-13", "products": "智能插座、调光器", "port": "宁波、上海", "us_teu": "180+ TEU"}, {"id": 4, "name": "上海起帆电缆股份有限公司", "booth": "14.3.B06-07", "products": "电力电缆、通信电缆", "port": "上海、宁波", "us_teu": "950+ TEU"}, {"id": 5, "name": "优利德科技(中国)股份有限公司", "booth": "14.3B43-44", "products": "数字多用表、红外测温仪", "port": "深圳、盐田", "us_teu": "650+ TEU"}, {"id": 6, "name": "明珠电气股份有限公司", "booth": "14.3B40-41", "products": "变压器、电抗器、开关柜", "port": "广州、南沙", "us_teu": "580+ TEU"}, {"id": 7, "name": "上海德力西电器有限公司", "booth": "14.3B34-35", "products": "断路器、交流接触器", "port": "上海、宁波", "us_teu": "450+ TEU"}, {"id": 8, "name": "浙江正泰仪器仪表有限责任公司", "booth": "14.3B38-39", "products": "电能表、水表、气表", "port": "宁波、上海", "us_teu": "430+ TEU"}, {"id": 9, "name": "乐清市亚安防爆电气有限公司", "booth": "14.3B42", "products": "防爆灯具、防爆配电箱", "port": "宁波、温州", "us_teu": "290+ TEU"}, {"id": 10, "name": "中山市家的电器有限公司", "booth": "14.3.B03-05", "products": "大面板开关、LED插座", "port": "深圳、中山", "us_teu": "150+ TEU"}, {"id": 11, "name": "三友联众集团股份有限公司", "booth": "14.3C21-22", "products": "继电器、互感器、互感磁芯", "port": "深圳、东莞", "us_teu": "820+ TEU"}, {"id": 12, "name": "福建省闽华电源股份有限公司", "booth": "14.3C40", "products": "铅酸蓄电池、储能电池", "port": "厦门、福州", "us_teu": "780+ TEU"}, {"id": 13, "name": "浙江华光电器集团有限公司", "booth": "14.3C06-07", "products": "挂烫机、蒸汽电熨斗", "port": "宁波、上海", "us_teu": "380+ TEU"}, {"id": 14, "name": "桂林国际电线电缆集团有限责任公司", "booth": "14.3C19-20", "products": "橡胶电缆、光伏线缆", "port": "钦州、广州", "us_teu": "360+ TEU"}, {"id": 15, "name": "嘉兴新缆电缆股份有限公司", "booth": "14.3C13", "products": "各种规格电线、BV/BVR线", "port": "宁波、嘉兴", "us_teu": "340+ TEU"}, {"id": 16, "name": "建德市勇华电器有限公司", "booth": "14.3C01-02", "products": "卷线器、拖线板、转换器", "port": "宁波", "us_teu": "250+ TEU"}, {"id": 17, "name": "武汉高德智感科技有限公司", "booth": "14.3C17-18", "products": "手持红外热像仪", "port": "深圳、武汉", "us_teu": "190+ TEU"}, {"id": 18, "name": "温州宝翔科技有限公司", "booth": "14.3C08", "products": "稳压器、逆变器", "port": "宁波、温州", "us_teu": "160+ TEU"}, {"id": 19, "name": "江西恒力电池科技有限公司", "booth": "14.3D19-20", "products": "密封蓄电池、动力电池", "port": "宁波、九江", "us_teu": "540+ TEU"}, {"id": 20, "name": "宁波凯峰电器有限公司", "booth": "14.3D31-32", "products": "接线端子、连接器", "port": "宁波", "us_teu": "270+ TEU"}, {"id": 21, "name": "河南通达电缆股份有限公司", "booth": "14.3E42", "products": "钢芯铝绞线、架空导线", "port": "青岛、天津", "us_teu": "620+ TEU"}, {"id": 22, "name": "佛山市德诚远景进出口有限公司", "booth": "14.3E40-41", "products": "通用电器附件、开关", "port": "佛山、南沙", "us_teu": "210+ TEU"}, {"id": 23, "name": "固达电线电缆(集团)有限公司", "booth": "14.3F23-24", "products": "环保家装线、电力电缆", "port": "南沙、深圳", "us_teu": "140+ TEU"}, {"id": 24, "name": "意华控股集团有限公司", "booth": "14.3G40-42", "products": "汽车连接器、通讯连接器", "port": "宁波、上海", "us_teu": "320+ TEU"}, {"id": 25, "name": "广东俊朗松田电器有限公司", "booth": "14.3G34-35", "products": "墙壁开关、插座", "port": "深圳、南沙", "us_teu": "200+ TEU"}, {"id": 26, "name": "深圳市华盛昌科技实业股份有限公司", "booth": "14.3H18-19", "products": "测量仪表、环境测试仪", "port": "深圳、盐田", "us_teu": "490+ TEU"}, {"id": 27, "name": "广东金联宇电缆集团有限公司", "booth": "14.3H14-15", "products": "低压电线、建筑用线", "port": "佛山、南沙", "us_teu": "410+ TEU"}, {"id": 28, "name": "浙江天齐电气有限公司", "booth": "14.3H33-34", "products": "配电箱、仪表机箱", "port": "宁波", "us_teu": "220+ TEU"}, {"id": 29, "name": "宁波恒达高智能科技股份有限公司", "booth": "14.3H16-17", "products": "智能控制器、遥控器", "port": "宁波", "us_teu": "170+ TEU"}, {"id": 30, "name": "温州益坤电气股份有限公司", "booth": "14.3H31-32", "products": "避雷器、绝缘子", "port": "宁波、温州", "us_teu": "130+ TEU"}];
 
-// Storage
-const STORAGE_KEY = 'whal宝_exhibition_v1';
-let records = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-let currentFilter = 'all';
-let openCardId = null;
+let data={};
+try{data=JSON.parse(localStorage.getItem('cf143_v3')||'{}')}catch(e){}
 
-function save() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+function save(){localStorage.setItem('cf143_v3',JSON.stringify(data));refresh()}
+
+function refresh(){
+  let t=0,d=0,k=0,w=0;
+  Object.values(data).forEach(v=>{if(v.t)t++;if(v.d)d++;if(v.k)k++;if(v.w)w++});
+  document.getElementById('s-t').textContent=t;
+  document.getElementById('s-d').textContent=d;
+  document.getElementById('s-k').textContent=k;
+  document.getElementById('s-w').textContent=w;
+  render();
 }
 
-function getRecord(id) {
-  return records[id] || { reached: null, needs: null, keyPerson: null, wechat: '', rating: null, notes: '' };
-}
-
-function setRecord(id, field, value) {
-  if (!records[id]) records[id] = { reached: null, needs: null, keyPerson: null, wechat: '', rating: null, notes: '' };
-  records[id][field] = value;
-  save();
-}
-
-function updateStats() {
-  const all = companies;
-  const reached = all.filter(c => (records[c.id] || {}).reached === true);
-  const needs = all.filter(c => (records[c.id] || {}).needs === true);
-  const wechat = all.filter(c => (records[c.id] || {}).wechat && (records[c.id] || {}).wechat.trim() !== '');
-  const starred = all.filter(c => (records[c.id] || {}).rating && records[c.id].rating >= 3);
-  const unvisited = all.filter(c => !(records[c.id] || {}).reached);
-
-  document.getElementById('stat-reached').textContent = reached.length;
-  document.getElementById('stat-needs').textContent = needs.length;
-  document.getElementById('stat-wechat').textContent = wechat.length;
-  document.getElementById('cnt-all').textContent = all.length;
-  document.getElementById('cnt-reached').textContent = reached.length;
-  document.getElementById('cnt-needs').textContent = needs.length;
-  document.getElementById('cnt-starred').textContent = starred.length;
-  document.getElementById('cnt-unvisited').textContent = unvisited.length;
-}
-
-function renderList() {
-  const container = document.getElementById('company-list');
-  let filtered = companies;
-
-  if (currentFilter === 'unvisited') filtered = companies.filter(c => !(records[c.id] || {}).reached);
-  else if (currentFilter === 'reached') filtered = companies.filter(c => (records[c.id] || {}).reached === true);
-  else if (currentFilter === 'needs') filtered = companies.filter(c => (records[c.id] || {}).needs === true);
-  else if (currentFilter === 'starred') filtered = companies.filter(c => (records[c.id] || {}).rating >= 3);
-
-  if (filtered.length === 0) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <div class="icon">🔍</div>
-        <h3>暂无符合条件的企业</h3>
-        <p>换个筛选条件试试</p>
-      </div>`;
-    return;
-  }
-
-  // Group by hall
-  const halls = {};
-  filtered.forEach(c => {
-    if (!halls[c.hall]) halls[c.hall] = [];
-    halls[c.hall].push(c);
-  });
-
-  let html = '';
-  Object.keys(halls).sort().forEach(hall => {
-    html += `<div class="section-header">📍 展馆 ${hall}</div>`;
-    halls[hall].forEach(c => {
-      const rec = getRecord(c.id);
-      const isVisited = rec.reached === true;
-      const isOpen = openCardId === c.id;
-      const priorityLabel = c.priority === 1 ? '⭐核心' : c.priority === 2 ? '✨重点' : '';
-
-      html += `
-      <div class="company-card${isVisited ? ' visited' : ''}${isOpen ? ' open' : ''}" data-id="${c.id}">
-        <div class="company-main" onclick="toggleCard(${c.id})">
-          <div class="company-top">
-            <div class="company-index">${c.id}</div>
-            <div class="company-info">
-              <div class="company-name">${c.name}${c.alias ? ` <span style="color:var(--text-muted);font-weight:400">(${c.alias})</span>` : ''}</div>
-              <div class="company-booth">📍 ${c.booth}</div>
-            </div>
-            <div class="chevron">▼</div>
-          </div>
-          <div class="company-tags">
-            ${priorityLabel ? `<span class="tag tag-priority">${priorityLabel}</span>` : ''}
-            <span class="tag ${c.tag}">${c.tagLabel}</span>
-            ${isVisited ? `<span class="visit-badge">✅ 已触达</span>` : `<span class="visit-badge unvisited">⚪ 未触达</span>`}
+function render(){
+  const kw=document.getElementById('kw').value.trim().toLowerCase();
+  const list=document.getElementById('list');
+  const flt=COMPANIES.filter(c=>!kw||c.name.toLowerCase().includes(kw)||c.booth.toLowerCase().includes(kw)||c.products.toLowerCase().includes(kw));
+  if(!flt.length){list.innerHTML='<div class=empty><p>未找到匹配展商</p></div>';return}
+  list.innerHTML=flt.map(c=>{
+    const v=data[c.id]||{};
+    const hot=v.d;
+    const cls=hot?'hot':(v.t?'touched':'');
+    return `<div class="company-card ${cls}" id="c${c.id}">
+      <div class="card-header">
+        <div class="rank-badge">${c.id}</div>
+        <div class="card-body">
+          <div class="cn-name">${c.name}</div>
+          <div class="booth-tag">${c.booth}</div>
+          <div class="meta">
+            <span>${c.products}</span>
+            <span>${c.port}</span>
+            <span class="teu-badge">${c.us_teu}</span>
           </div>
         </div>
-        <div class="company-form">
-          <div class="form-row">
-            <div class="form-label">❓ 是否触达</div>
-            <div class="form-toggle-group">
-              <button class="toggle-btn${rec.reached === true ? ' selected-yes' : ''}" onclick="setToggle(${c.id},'reached',true)">✅ 触达</button>
-              <button class="toggle-btn${rec.reached === false ? ' selected-no' : ''}" onclick="setToggle(${c.id},'reached',false)">❌ 未触达</button>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-label">💡 是否有 DDP 物流需求</div>
-            <div class="form-toggle-group">
-              <button class="toggle-btn${rec.needs === true ? ' selected-yes' : ''}" onclick="setToggle(${c.id},'needs',true)">✅ 有需求</button>
-              <button class="toggle-btn${rec.needs === false ? ' selected-no' : ''}" onclick="setToggle(${c.id},'needs',false)">❌ 无需求</button>
-              <button class="toggle-btn${rec.needs === null && rec.reached !== null ? ' selected-maybe' : ''}" onclick="setToggle(${c.id},'needs',null)">❓ 待定</button>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-label">👤 是否关键人</div>
-            <div class="form-toggle-group">
-              <button class="toggle-btn${rec.keyPerson === true ? ' selected-yes' : ''}" onclick="setToggle(${c.id},'keyPerson',true)">✅ 是</button>
-              <button class="toggle-btn${rec.keyPerson === false ? ' selected-no' : ''}" onclick="setToggle(${c.id},'keyPerson',false)">❌ 否</button>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-label">⭐ 综合评级</div>
-            <div class="rating-group">
-              ${[1,2,3,4,5].map(n => `<button class="star-btn s${n}${rec.rating === n ? ' selected' : ''}" onclick="setToggle(${c.id},'rating',${n})">${'★'.repeat(n)}</button>`).join('')}
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-label">💬 备注 / 联系人信息</div>
-            <textarea class="form-notes" id="notes-${c.id}" placeholder="可填写：联系人姓名、职务、微信、手机..." onblur="saveNotes(${c.id})">${rec.notes || ''}</textarea>
-          </div>
-          <button class="save-btn" onclick="toggleCard(${c.id})">✓ 保存并收起</button>
+      </div>
+      <div class="actions">
+        <button class="btn-act ${v.t?'on1':''}" onclick="setv(${c.id},'t')">
+          <div class="b-icon">${v.t?'&#10003;':'&#128204;';}</div>
+          <div class="b-lbl">触达</div>
+        </button>
+        <button class="btn-act ${v.d?'on2':''}" onclick="setv(${c.id},'d')">
+          <div class="b-icon">${v.d?'&#9733;':'&#128293;'}</div>
+          <div class="b-lbl">有需求</div>
+        </button>
+        <button class="btn-act ${v.k?'on3':''}" onclick="setv(${c.id},'k')">
+          <div class="b-icon">&#128100;</div>
+          <div class="b-lbl">关键人</div>
+        </button>
+        <button class="btn-act ${v.w?'on4':''}" onclick="setv(${c.id},'w')">
+          <div class="b-icon">${v.w?'&#10003;':'&#128172;'}</div>
+          <div class="b-lbl">加微</div>
+        </button>
+      </div>
+      <div class="rating">
+        <label>评级:</label>
+        <div class="rating-btns">
+          <button class="rtag a ${v.r==='A'?'sel':''}" onclick="setr(${c.id},'A')">A</button>
+          <button class="rtag b ${v.r==='B'?'sel':''}" onclick="setr(${c.id},'B')">B</button>
+          <button class="rtag c ${v.r==='C'?'sel':''}" onclick="setr(${c.id},'C')">C</button>
+          <button class="rtag d ${v.r==='D'?'sel':''}" onclick="setr(${c.id},'D')">D</button>
         </div>
-      </div>`;
-    });
-  });
-
-  container.innerHTML = html;
+      </div>
+    </div>`
+  }).join('')
 }
 
-function toggleCard(id) {
-  if (openCardId === id) {
-    openCardId = null;
-  } else {
-    openCardId = id;
-  }
-  document.querySelectorAll('.company-card').forEach(card => {
-    if (parseInt(card.dataset.id) === openCardId) {
-      card.classList.add('open');
-    } else {
-      card.classList.remove('open');
-    }
-  });
-  // Scroll into view
-  const el = document.querySelector(`.company-card[data-id="${id}"]`);
-  if (el) {
-    setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
-  }
+function setv(id,f){if(!data[id])data[id]={};data[id][f]=!data[id][f];save()}
+function setr(id,r){if(!data[id])data[id]={};data[id].r=data[id].r===r?null:r;save()}
+
+function resetAll(){if(!confirm('确定清空所有登记数据？'))return;data={};save();showToast('已清空')}
+
+function doExport(){
+  const rows=COMPANIES.map(c=>{const v=data[c.id]||{};return[c.id,c.name,c.booth,c.products,c.port,c.us_teu,v.t?'是':'否',v.d?'是':'否',v.k?'是':'否',v.w?'是':'否',v.r||''].join(',')});
+  const csv='序号,公司名称,展位号,核心品名,起运港,对美货量,已触达,有需求,关键人,加微,评级\n'+rows.join('\n');
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='广交会14.3馆拜访记录_'+new Date().toLocaleDateString('zh-CN').replace(/\//g,'-')+'.csv';a.click();
+  showToast('已导出CSV')
 }
 
-function setToggle(id, field, value) {
-  const current = records[id] ? records[id][field] : null;
-  // Toggle off if same value
-  if (current === value) {
-    if (field === 'reached') setRecord(id, 'reached', null);
-    else if (field === 'needs') setRecord(id, 'needs', null);
-    else if (field === 'keyPerson') setRecord(id, 'keyPerson', null);
-    else if (field === 'rating') setRecord(id, 'rating', null);
-  } else {
-    setRecord(id, field, value);
-  }
-  updateStats();
-  renderList();
-  openCardId = id;
-  setTimeout(() => {
-    const el = document.querySelector(`.company-card[data-id="${id}"]`);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }, 50);
-}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000)}
 
-function saveNotes(id) {
-  const val = document.getElementById(`notes-${id}`).value;
-  setRecord(id, 'notes', val);
-}
-
-// Filter tabs
-document.querySelectorAll('.filter-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentFilter = btn.dataset.filter;
-    openCardId = null;
-    renderList();
-  });
-});
-
-// Export
-document.getElementById('export-btn').addEventListener('click', () => {
-  const visited = companies.filter(c => (records[c.id] || {}).reached === true);
-  if (visited.length === 0) {
-    alert('还没有登记任何企业哦，先去展馆扫一扫！');
-    return;
-  }
-
-  const date = new Date().toLocaleDateString('zh-CN');
-  let csv = '\uFEFF'; // BOM for UTF-8
-  csv += `序号,企业名称,展位号,类别,优先级,是否触达,是否有需求,是否关键人,评级,备注\n`;
-  visited.forEach(c => {
-    const r = records[c.id] || {};
-    const priority = c.priority === 1 ? '核心' : c.priority === 2 ? '重点' : '普通';
-    csv += `${c.id},"${c.name}",${c.booth},${c.tagLabel},${priority},${r.reached ? '是' : '否'},${r.needs === true ? '是' : r.needs === false ? '否' : '待定'},${r.keyPerson === true ? '是' : r.keyPerson === false ? '否' : '未知'},${r.rating ? r.rating + '星' : ''},"${(r.notes || '').replace(/"/g, '""')}"\n`;
-  });
-
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `鲸宝展商登记_${date}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
-});
-
-// Today date
-const now = new Date();
-const weekdays = ['周日','周一','周二','周三','周四','周五','周六'];
-document.getElementById('today').textContent = `${now.getMonth()+1}月${now.getDate()}日 ${weekdays[now.getDay()]}`;
-
-updateStats();
-renderList();
+document.getElementById('kw').addEventListener('input',render);
+refresh();
 </script>
 </body>
 </html>
