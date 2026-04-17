@@ -3,806 +3,277 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>14.3馆展商拜访登记</title>
+<title>14.3馆 展商拜访登记</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; background: #f0f2f5; color: #1a1a1a; min-height: 100vh; padding-bottom: 80px; }
-header { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; padding: 18px 16px 14px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-header h1 { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
-.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-.stat-box { background: rgba(255,255,255,0.2); border-radius: 8px; padding: 8px 4px; text-align: center; }
-.stat-box .num { font-size: 22px; font-weight: 700; }
-.stat-box .lbl { font-size: 11px; opacity: 0.85; }
-#search { width: 100%; margin-top: 10px; padding: 10px 14px; border-radius: 10px; border: none; font-size: 16px; outline: none; }
-.filter-bar { display: flex; gap: 6px; margin: 10px 16px 4px; flex-wrap: wrap; }
-.filter-btn { padding: 5px 12px; border-radius: 20px; border: 1.5px solid #ddd; background: white; font-size: 13px; cursor: pointer; }
-.filter-btn.active { background: #e74c3c; color: white; border-color: #e74c3c; }
-#companyList { padding: 8px 12px; display: grid; gap: 10px; }
-.company-card { background: white; border-radius: 12px; padding: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: transform 0.15s; }
-.company-card.hidden { display: none; }
-.company-card.reached { border-left: 4px solid #27ae60; }
-.company-card.hot { border-left: 4px solid #e74c3c; }
-.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.booth-badge { background: #e74c3c; color: white; font-weight: 700; font-size: 13px; padding: 3px 10px; border-radius: 20px; }
-.rating-stars { display: flex; gap: 4px; }
-.rating-stars span { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #ddd; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; cursor: pointer; color: #888; background: white; }
-.rating-stars span.activeA { background: #27ae60; border-color: #27ae60; color: white; }
-.rating-stars span.activeB { background: #3498db; border-color: #3498db; color: white; }
-.rating-stars span.activeC { background: #f39c12; border-color: #f39c12; color: white; }
-.rating-stars span.activeD { background: #95a5a6; border-color: #95a5a6; color: white; }
-.company-name { font-weight: 700; font-size: 15px; margin-bottom: 6px; line-height: 1.4; }
-.company-meta { font-size: 13px; color: #555; margin-bottom: 3px; }
-.checkboxes { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 8px; }
-.checkboxes label { display: flex; align-items: center; gap: 5px; font-size: 13px; cursor: pointer; }
-.checkboxes input[type=checkbox] { width: 16px; height: 16px; accent-color: #e74c3c; }
-.rating-display { margin-top: 6px; font-size: 13px; font-weight: 600; color: #888; }
-.footer-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #eee; padding: 10px 16px; display: flex; gap: 10px; z-index: 100; }
-.footer-bar button { flex: 1; padding: 12px; border-radius: 10px; border: none; font-size: 15px; font-weight: 600; cursor: pointer; }
-.btn-export { background: #e74c3c; color: white; }
-.btn-reset { background: #f0f0f0; color: #666; }
+body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif; background: #f0f2f5; color: #1a1a1a; font-size: 14px; }
+
+.header { background: linear-gradient(135deg, #1a73e8, #0d47a1); color: white; padding: 16px 16px 12px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+.header h1 { font-size: 18px; font-weight: 600; margin-bottom: 10px; }
+.stats-bar { display: flex; gap: 8px; flex-wrap: wrap; }
+.stat-chip { background: rgba(255,255,255,0.2); border-radius: 14px; padding: 4px 10px; font-size: 12px; }
+.stat-chip span { font-weight: 600; }
+
+.search-box { margin-top: 10px; }
+.search-box input { width: 100%; padding: 8px 12px; border: none; border-radius: 8px; font-size: 14px; background: rgba(255,255,255,0.95); color: #333; }
+.filter-row { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.filter-btn { padding: 4px 10px; border-radius: 12px; border: 1.5px solid rgba(255,255,255,0.5); background: transparent; color: white; font-size: 12px; cursor: pointer; transition: all 0.15s; }
+.filter-btn.active { background: white; color: #1a73e8; border-color: white; }
+.filter-btn .count { opacity: 0.7; font-size: 11px; }
+
+.action-row { display: flex; gap: 8px; margin-top: 8px; }
+.action-btn { flex: 1; padding: 7px; border-radius: 8px; border: none; font-size: 13px; font-weight: 500; cursor: pointer; text-align: center; }
+.btn-export { background: rgba(255,255,255,0.2); color: white; }
+.btn-clear { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.8); }
+.btn-reset { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.8); }
+
+.list { padding: 8px; }
+.company-card { background: white; border-radius: 12px; margin-bottom: 8px; padding: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: transform 0.15s; }
+.company-card:active { transform: scale(0.98; }
+
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.company-name { font-size: 14px; font-weight: 600; color: #1a1a1a; line-height: 1.4; flex: 1; padding-right: 8px; }
+.booth-badge { background: #e8f0fe; color: #1a73e8; padding: 3px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
+.booth-multi { font-size: 11px; color: #5f6368; }
+
+.check-row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; margin-bottom: 8px; }
+.check-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: #5f6368; cursor: pointer; }
+.check-item input[type=checkbox] { width: 16px; height: 16px; accent-color: #1a73e8; }
+
+.rating-row { display: flex; gap: 6px; align-items: center; }
+.rating-label { font-size: 12px; color: #5f6368; margin-right: 2px; }
+.rating-btn { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #e0e0e0; background: white; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.15s; color: #666; }
+.rating-btn.selected-A { background: #d32f2f; border-color: #d32f2f; color: white; }
+.rating-btn.selected-B { background: #f57c00; border-color: #f57c00; color: white; }
+.rating-btn.selected-C { background: #388e3c; border-color: #388e3c; color: white; }
+.rating-btn.selected-D { background: #9e9e9e; border-color: #9e9e9e; color: white; }
+
+.footer-note { text-align: center; color: #9e9e9e; font-size: 11px; padding: 12px; }
+
+/* Section label */
+.section-label { font-size: 12px; font-weight: 600; color: #666; padding: 6px 4px 2px; margin-top: 4px; }
+
+.empty { text-align: center; padding: 40px; color: #999; }
 </style>
 </head>
 <body>
-<header>
-  <h1>🔴 14.3馆展商拜访登记</h1>
-  <div class="stats">
-    <div class="stat-box"><div class="num" id="s1">0</div><div class="lbl">触达</div></div>
-    <div class="stat-box"><div class="num" id="s2">0</div><div class="lbl">有需求</div></div>
-    <div class="stat-box"><div class="num" id="s3">0</div><div class="lbl">关键人</div></div>
-    <div class="stat-box"><div class="num" id="s4">0</div><div class="lbl">已加微</div></div>
-  </div>
-  <input type="search" id="search" placeholder="🔍 搜索公司名/展位号..." oninput="doSearch()">
-  <div class="filter-bar">
-    <button class="filter-btn active" onclick="setFilter('all',this)">全部</button>
-    <button class="filter-btn" onclick="setFilter('reached',this)">已触达</button>
-    <button class="filter-btn" onclick="setFilter('hot',this)">🔥 有需求</button>
-    <button class="filter-btn" onclick="setFilter('keyperson',this)">👤 关键人</button>
-    <button class="filter-btn" onclick="setFilter('wechat',this)">💬 已加微</button>
-  </div>
-</header>
-<div id="companyList">
 
-        <div class="company-card" data-name="广东日丰电缆股份有限公司" data-booth="14.3A16-17">
-            <div class="card-header">
-                <div class="booth-badge">14.3A16-17</div>
-                <div class="rating-stars" data-v="0">
-                    <span onclick="setRating(0,'A')">A</span>
-                    <span onclick="setRating(0,'B')">B</span>
-                    <span onclick="setRating(0,'C')">C</span>
-                    <span onclick="setRating(0,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">广东日丰电缆股份有限公司</div>
-            <div class="company-meta">📦 电线电缆、电源线插头</div>
-            <div class="company-meta">🚢 深圳、南沙</div>
-            <div class="company-meta">📊 1,200+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r0" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d0" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k0" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w0" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd0">评级: —</div>
-        </div>
-        <div class="company-card" data-name="浙江泰达微电机有限公司" data-booth="14.3A08-09">
-            <div class="card-header">
-                <div class="booth-badge">14.3A08-09</div>
-                <div class="rating-stars" data-v="1">
-                    <span onclick="setRating(1,'A')">A</span>
-                    <span onclick="setRating(1,'B')">B</span>
-                    <span onclick="setRating(1,'C')">C</span>
-                    <span onclick="setRating(1,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">浙江泰达微电机有限公司</div>
-            <div class="company-meta">📦 微特电机、清洗机马达</div>
-            <div class="company-meta">🚢 宁波、上海</div>
-            <div class="company-meta">📊 240+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r1" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d1" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k1" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w1" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd1">评级: —</div>
-        </div>
-        <div class="company-card" data-name="杭州鸿世电器股份有限公司" data-booth="14.3A12-13">
-            <div class="card-header">
-                <div class="booth-badge">14.3A12-13</div>
-                <div class="rating-stars" data-v="2">
-                    <span onclick="setRating(2,'A')">A</span>
-                    <span onclick="setRating(2,'B')">B</span>
-                    <span onclick="setRating(2,'C')">C</span>
-                    <span onclick="setRating(2,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">杭州鸿世电器股份有限公司</div>
-            <div class="company-meta">📦 智能插座、调光器</div>
-            <div class="company-meta">🚢 宁波、上海</div>
-            <div class="company-meta">📊 180+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r2" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d2" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k2" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w2" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd2">评级: —</div>
-        </div>
-        <div class="company-card" data-name="上海起帆电缆股份有限公司" data-booth="14.3.B06-07">
-            <div class="card-header">
-                <div class="booth-badge">14.3.B06-07</div>
-                <div class="rating-stars" data-v="3">
-                    <span onclick="setRating(3,'A')">A</span>
-                    <span onclick="setRating(3,'B')">B</span>
-                    <span onclick="setRating(3,'C')">C</span>
-                    <span onclick="setRating(3,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">上海起帆电缆股份有限公司</div>
-            <div class="company-meta">📦 电力电缆、通信电缆</div>
-            <div class="company-meta">🚢 上海、宁波</div>
-            <div class="company-meta">📊 950+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r3" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d3" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k3" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w3" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd3">评级: —</div>
-        </div>
-        <div class="company-card" data-name="优利德科技(中国)股份有限公司" data-booth="14.3B43-44">
-            <div class="card-header">
-                <div class="booth-badge">14.3B43-44</div>
-                <div class="rating-stars" data-v="4">
-                    <span onclick="setRating(4,'A')">A</span>
-                    <span onclick="setRating(4,'B')">B</span>
-                    <span onclick="setRating(4,'C')">C</span>
-                    <span onclick="setRating(4,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">优利德科技(中国)股份有限公司</div>
-            <div class="company-meta">📦 数字多用表、红外测温仪</div>
-            <div class="company-meta">🚢 深圳、盐田</div>
-            <div class="company-meta">📊 650+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r4" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d4" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k4" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w4" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd4">评级: —</div>
-        </div>
-        <div class="company-card" data-name="明珠电气股份有限公司" data-booth="14.3B40-41">
-            <div class="card-header">
-                <div class="booth-badge">14.3B40-41</div>
-                <div class="rating-stars" data-v="5">
-                    <span onclick="setRating(5,'A')">A</span>
-                    <span onclick="setRating(5,'B')">B</span>
-                    <span onclick="setRating(5,'C')">C</span>
-                    <span onclick="setRating(5,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">明珠电气股份有限公司</div>
-            <div class="company-meta">📦 变压器、电抗器、开关柜</div>
-            <div class="company-meta">🚢 广州、南沙</div>
-            <div class="company-meta">📊 580+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r5" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d5" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k5" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w5" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd5">评级: —</div>
-        </div>
-        <div class="company-card" data-name="上海德力西电器有限公司" data-booth="14.3B34-35">
-            <div class="card-header">
-                <div class="booth-badge">14.3B34-35</div>
-                <div class="rating-stars" data-v="6">
-                    <span onclick="setRating(6,'A')">A</span>
-                    <span onclick="setRating(6,'B')">B</span>
-                    <span onclick="setRating(6,'C')">C</span>
-                    <span onclick="setRating(6,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">上海德力西电器有限公司</div>
-            <div class="company-meta">📦 断路器、交流接触器</div>
-            <div class="company-meta">🚢 上海、宁波</div>
-            <div class="company-meta">📊 450+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r6" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d6" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k6" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w6" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd6">评级: —</div>
-        </div>
-        <div class="company-card" data-name="浙江正泰仪器仪表有限责任公司" data-booth="14.3B38-39">
-            <div class="card-header">
-                <div class="booth-badge">14.3B38-39</div>
-                <div class="rating-stars" data-v="7">
-                    <span onclick="setRating(7,'A')">A</span>
-                    <span onclick="setRating(7,'B')">B</span>
-                    <span onclick="setRating(7,'C')">C</span>
-                    <span onclick="setRating(7,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">浙江正泰仪器仪表有限责任公司</div>
-            <div class="company-meta">📦 电能表、水表、气表</div>
-            <div class="company-meta">🚢 宁波、上海</div>
-            <div class="company-meta">📊 430+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r7" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d7" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k7" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w7" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd7">评级: —</div>
-        </div>
-        <div class="company-card" data-name="乐清市亚安防爆电气有限公司" data-booth="14.3B42">
-            <div class="card-header">
-                <div class="booth-badge">14.3B42</div>
-                <div class="rating-stars" data-v="8">
-                    <span onclick="setRating(8,'A')">A</span>
-                    <span onclick="setRating(8,'B')">B</span>
-                    <span onclick="setRating(8,'C')">C</span>
-                    <span onclick="setRating(8,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">乐清市亚安防爆电气有限公司</div>
-            <div class="company-meta">📦 防爆灯具、防爆配电箱</div>
-            <div class="company-meta">🚢 宁波、温州</div>
-            <div class="company-meta">📊 290+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r8" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d8" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k8" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w8" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd8">评级: —</div>
-        </div>
-        <div class="company-card" data-name="中山市家的电器有限公司" data-booth="14.3.B03-05">
-            <div class="card-header">
-                <div class="booth-badge">14.3.B03-05</div>
-                <div class="rating-stars" data-v="9">
-                    <span onclick="setRating(9,'A')">A</span>
-                    <span onclick="setRating(9,'B')">B</span>
-                    <span onclick="setRating(9,'C')">C</span>
-                    <span onclick="setRating(9,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">中山市家的电器有限公司</div>
-            <div class="company-meta">📦 大面板开关、LED插座</div>
-            <div class="company-meta">🚢 深圳、中山</div>
-            <div class="company-meta">📊 150+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r9" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d9" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k9" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w9" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd9">评级: —</div>
-        </div>
-        <div class="company-card" data-name="三友联众集团股份有限公司" data-booth="14.3C21-22">
-            <div class="card-header">
-                <div class="booth-badge">14.3C21-22</div>
-                <div class="rating-stars" data-v="10">
-                    <span onclick="setRating(10,'A')">A</span>
-                    <span onclick="setRating(10,'B')">B</span>
-                    <span onclick="setRating(10,'C')">C</span>
-                    <span onclick="setRating(10,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">三友联众集团股份有限公司</div>
-            <div class="company-meta">📦 继电器、互感器、互感磁芯</div>
-            <div class="company-meta">🚢 深圳、东莞</div>
-            <div class="company-meta">📊 820+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r10" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d10" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k10" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w10" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd10">评级: —</div>
-        </div>
-        <div class="company-card" data-name="福建省闽华电源股份有限公司" data-booth="14.3C40">
-            <div class="card-header">
-                <div class="booth-badge">14.3C40</div>
-                <div class="rating-stars" data-v="11">
-                    <span onclick="setRating(11,'A')">A</span>
-                    <span onclick="setRating(11,'B')">B</span>
-                    <span onclick="setRating(11,'C')">C</span>
-                    <span onclick="setRating(11,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">福建省闽华电源股份有限公司</div>
-            <div class="company-meta">📦 铅酸蓄电池、储能电池</div>
-            <div class="company-meta">🚢 厦门、福州</div>
-            <div class="company-meta">📊 780+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r11" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d11" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k11" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w11" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd11">评级: —</div>
-        </div>
-        <div class="company-card" data-name="浙江华光电器集团有限公司" data-booth="14.3C06-07">
-            <div class="card-header">
-                <div class="booth-badge">14.3C06-07</div>
-                <div class="rating-stars" data-v="12">
-                    <span onclick="setRating(12,'A')">A</span>
-                    <span onclick="setRating(12,'B')">B</span>
-                    <span onclick="setRating(12,'C')">C</span>
-                    <span onclick="setRating(12,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">浙江华光电器集团有限公司</div>
-            <div class="company-meta">📦 挂烫机、蒸汽电熨斗</div>
-            <div class="company-meta">🚢 宁波、上海</div>
-            <div class="company-meta">📊 380+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r12" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d12" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k12" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w12" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd12">评级: —</div>
-        </div>
-        <div class="company-card" data-name="桂林国际电线电缆集团有限责任公司" data-booth="14.3C19-20">
-            <div class="card-header">
-                <div class="booth-badge">14.3C19-20</div>
-                <div class="rating-stars" data-v="13">
-                    <span onclick="setRating(13,'A')">A</span>
-                    <span onclick="setRating(13,'B')">B</span>
-                    <span onclick="setRating(13,'C')">C</span>
-                    <span onclick="setRating(13,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">桂林国际电线电缆集团有限责任公司</div>
-            <div class="company-meta">📦 橡胶电缆、光伏线缆</div>
-            <div class="company-meta">🚢 钦州、广州</div>
-            <div class="company-meta">📊 360+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r13" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d13" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k13" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w13" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd13">评级: —</div>
-        </div>
-        <div class="company-card" data-name="嘉兴新缆电缆股份有限公司" data-booth="14.3C13">
-            <div class="card-header">
-                <div class="booth-badge">14.3C13</div>
-                <div class="rating-stars" data-v="14">
-                    <span onclick="setRating(14,'A')">A</span>
-                    <span onclick="setRating(14,'B')">B</span>
-                    <span onclick="setRating(14,'C')">C</span>
-                    <span onclick="setRating(14,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">嘉兴新缆电缆股份有限公司</div>
-            <div class="company-meta">📦 各种规格电线、BV/BVR线</div>
-            <div class="company-meta">🚢 宁波、嘉兴</div>
-            <div class="company-meta">📊 340+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r14" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d14" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k14" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w14" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd14">评级: —</div>
-        </div>
-        <div class="company-card" data-name="建德市勇华电器有限公司" data-booth="14.3C01-02">
-            <div class="card-header">
-                <div class="booth-badge">14.3C01-02</div>
-                <div class="rating-stars" data-v="15">
-                    <span onclick="setRating(15,'A')">A</span>
-                    <span onclick="setRating(15,'B')">B</span>
-                    <span onclick="setRating(15,'C')">C</span>
-                    <span onclick="setRating(15,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">建德市勇华电器有限公司</div>
-            <div class="company-meta">📦 卷线器、拖线板、转换器</div>
-            <div class="company-meta">🚢 宁波</div>
-            <div class="company-meta">📊 250+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r15" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d15" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k15" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w15" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd15">评级: —</div>
-        </div>
-        <div class="company-card" data-name="武汉高德智感科技有限公司" data-booth="14.3C17-18">
-            <div class="card-header">
-                <div class="booth-badge">14.3C17-18</div>
-                <div class="rating-stars" data-v="16">
-                    <span onclick="setRating(16,'A')">A</span>
-                    <span onclick="setRating(16,'B')">B</span>
-                    <span onclick="setRating(16,'C')">C</span>
-                    <span onclick="setRating(16,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">武汉高德智感科技有限公司</div>
-            <div class="company-meta">📦 手持红外热像仪</div>
-            <div class="company-meta">🚢 深圳、武汉</div>
-            <div class="company-meta">📊 190+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r16" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d16" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k16" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w16" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd16">评级: —</div>
-        </div>
-        <div class="company-card" data-name="温州宝翔科技有限公司" data-booth="14.3C08">
-            <div class="card-header">
-                <div class="booth-badge">14.3C08</div>
-                <div class="rating-stars" data-v="17">
-                    <span onclick="setRating(17,'A')">A</span>
-                    <span onclick="setRating(17,'B')">B</span>
-                    <span onclick="setRating(17,'C')">C</span>
-                    <span onclick="setRating(17,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">温州宝翔科技有限公司</div>
-            <div class="company-meta">📦 稳压器、逆变器</div>
-            <div class="company-meta">🚢 宁波、温州</div>
-            <div class="company-meta">📊 160+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r17" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d17" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k17" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w17" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd17">评级: —</div>
-        </div>
-        <div class="company-card" data-name="江西恒力电池科技有限公司" data-booth="14.3D19-20">
-            <div class="card-header">
-                <div class="booth-badge">14.3D19-20</div>
-                <div class="rating-stars" data-v="18">
-                    <span onclick="setRating(18,'A')">A</span>
-                    <span onclick="setRating(18,'B')">B</span>
-                    <span onclick="setRating(18,'C')">C</span>
-                    <span onclick="setRating(18,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">江西恒力电池科技有限公司</div>
-            <div class="company-meta">📦 密封蓄电池、动力电池</div>
-            <div class="company-meta">🚢 宁波、九江</div>
-            <div class="company-meta">📊 540+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r18" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d18" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k18" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w18" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd18">评级: —</div>
-        </div>
-        <div class="company-card" data-name="宁波凯峰电器有限公司" data-booth="14.3D31-32">
-            <div class="card-header">
-                <div class="booth-badge">14.3D31-32</div>
-                <div class="rating-stars" data-v="19">
-                    <span onclick="setRating(19,'A')">A</span>
-                    <span onclick="setRating(19,'B')">B</span>
-                    <span onclick="setRating(19,'C')">C</span>
-                    <span onclick="setRating(19,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">宁波凯峰电器有限公司</div>
-            <div class="company-meta">📦 接线端子、连接器</div>
-            <div class="company-meta">🚢 宁波</div>
-            <div class="company-meta">📊 270+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r19" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d19" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k19" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w19" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd19">评级: —</div>
-        </div>
-        <div class="company-card" data-name="河南通达电缆股份有限公司" data-booth="14.3E42">
-            <div class="card-header">
-                <div class="booth-badge">14.3E42</div>
-                <div class="rating-stars" data-v="20">
-                    <span onclick="setRating(20,'A')">A</span>
-                    <span onclick="setRating(20,'B')">B</span>
-                    <span onclick="setRating(20,'C')">C</span>
-                    <span onclick="setRating(20,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">河南通达电缆股份有限公司</div>
-            <div class="company-meta">📦 钢芯铝绞线、架空导线</div>
-            <div class="company-meta">🚢 青岛、天津</div>
-            <div class="company-meta">📊 620+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r20" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d20" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k20" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w20" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd20">评级: —</div>
-        </div>
-        <div class="company-card" data-name="佛山市德诚远景进出口有限公司" data-booth="14.3E40-41">
-            <div class="card-header">
-                <div class="booth-badge">14.3E40-41</div>
-                <div class="rating-stars" data-v="21">
-                    <span onclick="setRating(21,'A')">A</span>
-                    <span onclick="setRating(21,'B')">B</span>
-                    <span onclick="setRating(21,'C')">C</span>
-                    <span onclick="setRating(21,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">佛山市德诚远景进出口有限公司</div>
-            <div class="company-meta">📦 通用电器附件、开关</div>
-            <div class="company-meta">🚢 佛山、南沙</div>
-            <div class="company-meta">📊 210+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r21" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d21" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k21" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w21" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd21">评级: —</div>
-        </div>
-        <div class="company-card" data-name="固达电线电缆(集团)有限公司" data-booth="14.3F23-24">
-            <div class="card-header">
-                <div class="booth-badge">14.3F23-24</div>
-                <div class="rating-stars" data-v="22">
-                    <span onclick="setRating(22,'A')">A</span>
-                    <span onclick="setRating(22,'B')">B</span>
-                    <span onclick="setRating(22,'C')">C</span>
-                    <span onclick="setRating(22,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">固达电线电缆(集团)有限公司</div>
-            <div class="company-meta">📦 环保家装线、电力电缆</div>
-            <div class="company-meta">🚢 南沙、深圳</div>
-            <div class="company-meta">📊 140+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r22" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d22" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k22" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w22" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd22">评级: —</div>
-        </div>
-        <div class="company-card" data-name="意华控股集团有限公司" data-booth="14.3G40-42">
-            <div class="card-header">
-                <div class="booth-badge">14.3G40-42</div>
-                <div class="rating-stars" data-v="23">
-                    <span onclick="setRating(23,'A')">A</span>
-                    <span onclick="setRating(23,'B')">B</span>
-                    <span onclick="setRating(23,'C')">C</span>
-                    <span onclick="setRating(23,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">意华控股集团有限公司</div>
-            <div class="company-meta">📦 汽车连接器、通讯连接器</div>
-            <div class="company-meta">🚢 宁波、上海</div>
-            <div class="company-meta">📊 320+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r23" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d23" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k23" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w23" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd23">评级: —</div>
-        </div>
-        <div class="company-card" data-name="广东俊朗松田电器有限公司" data-booth="14.3G34-35">
-            <div class="card-header">
-                <div class="booth-badge">14.3G34-35</div>
-                <div class="rating-stars" data-v="24">
-                    <span onclick="setRating(24,'A')">A</span>
-                    <span onclick="setRating(24,'B')">B</span>
-                    <span onclick="setRating(24,'C')">C</span>
-                    <span onclick="setRating(24,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">广东俊朗松田电器有限公司</div>
-            <div class="company-meta">📦 墙壁开关、插座</div>
-            <div class="company-meta">🚢 深圳、南沙</div>
-            <div class="company-meta">📊 200+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r24" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d24" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k24" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w24" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd24">评级: —</div>
-        </div>
-        <div class="company-card" data-name="深圳市华盛昌科技实业股份有限公司" data-booth="14.3H18-19">
-            <div class="card-header">
-                <div class="booth-badge">14.3H18-19</div>
-                <div class="rating-stars" data-v="25">
-                    <span onclick="setRating(25,'A')">A</span>
-                    <span onclick="setRating(25,'B')">B</span>
-                    <span onclick="setRating(25,'C')">C</span>
-                    <span onclick="setRating(25,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">深圳市华盛昌科技实业股份有限公司</div>
-            <div class="company-meta">📦 测量仪表、环境测试仪</div>
-            <div class="company-meta">🚢 深圳、盐田</div>
-            <div class="company-meta">📊 490+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r25" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d25" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k25" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w25" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd25">评级: —</div>
-        </div>
-        <div class="company-card" data-name="广东金联宇电缆集团有限公司" data-booth="14.3H14-15">
-            <div class="card-header">
-                <div class="booth-badge">14.3H14-15</div>
-                <div class="rating-stars" data-v="26">
-                    <span onclick="setRating(26,'A')">A</span>
-                    <span onclick="setRating(26,'B')">B</span>
-                    <span onclick="setRating(26,'C')">C</span>
-                    <span onclick="setRating(26,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">广东金联宇电缆集团有限公司</div>
-            <div class="company-meta">📦 低压电线、建筑用线</div>
-            <div class="company-meta">🚢 佛山、南沙</div>
-            <div class="company-meta">📊 410+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r26" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d26" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k26" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w26" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd26">评级: —</div>
-        </div>
-        <div class="company-card" data-name="浙江天齐电气有限公司" data-booth="14.3H33-34">
-            <div class="card-header">
-                <div class="booth-badge">14.3H33-34</div>
-                <div class="rating-stars" data-v="27">
-                    <span onclick="setRating(27,'A')">A</span>
-                    <span onclick="setRating(27,'B')">B</span>
-                    <span onclick="setRating(27,'C')">C</span>
-                    <span onclick="setRating(27,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">浙江天齐电气有限公司</div>
-            <div class="company-meta">📦 配电箱、仪表机箱</div>
-            <div class="company-meta">🚢 宁波</div>
-            <div class="company-meta">📊 220+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r27" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d27" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k27" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w27" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd27">评级: —</div>
-        </div>
-        <div class="company-card" data-name="宁波恒达高智能科技股份有限公司" data-booth="14.3H16-17">
-            <div class="card-header">
-                <div class="booth-badge">14.3H16-17</div>
-                <div class="rating-stars" data-v="28">
-                    <span onclick="setRating(28,'A')">A</span>
-                    <span onclick="setRating(28,'B')">B</span>
-                    <span onclick="setRating(28,'C')">C</span>
-                    <span onclick="setRating(28,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">宁波恒达高智能科技股份有限公司</div>
-            <div class="company-meta">📦 智能控制器、遥控器</div>
-            <div class="company-meta">🚢 宁波</div>
-            <div class="company-meta">📊 170+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r28" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d28" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k28" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w28" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd28">评级: —</div>
-        </div>
-        <div class="company-card" data-name="温州益坤电气股份有限公司" data-booth="14.3H31-32">
-            <div class="card-header">
-                <div class="booth-badge">14.3H31-32</div>
-                <div class="rating-stars" data-v="29">
-                    <span onclick="setRating(29,'A')">A</span>
-                    <span onclick="setRating(29,'B')">B</span>
-                    <span onclick="setRating(29,'C')">C</span>
-                    <span onclick="setRating(29,'D')">D</span>
-                </div>
-            </div>
-            <div class="company-name">温州益坤电气股份有限公司</div>
-            <div class="company-meta">📦 避雷器、绝缘子</div>
-            <div class="company-meta">🚢 宁波、温州</div>
-            <div class="company-meta">📊 130+ TEU</div>
-            <div class="checkboxes">
-                <label><input type="checkbox" id="r29" onchange="save()"> 已触达</label>
-                <label><input type="checkbox" id="d29" onchange="save()"> 有需求</label>
-                <label><input type="checkbox" id="k29" onchange="save()"> 关键人</label>
-                <label><input type="checkbox" id="w29" onchange="save()"> 已加微</label>
-            </div>
-            <div class="rating-display" id="rd29">评级: —</div>
-        </div>
+<div class="header">
+  <h1>🏛️ 14.3馆 展商拜访登记</h1>
+  <div class="stats-bar">
+    <div class="stat-chip">触达 <span id="s-reached">0</span></div>
+    <div class="stat-chip">有需求 <span id="s-demand">0</span></div>
+    <div class="stat-chip">关键人 <span id="s-key">0</span></div>
+    <div class="stat-chip">已加微 <span id="s-wechat">0</span></div>
+    <div class="stat-chip">A类 <span id="s-gradea">0</span></div>
+  </div>
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="🔍 搜索公司名或展位号…">
+  </div>
+  <div class="filter-row">
+    <button class="filter-btn active" data-filter="all">全部 <span id="f-all">30</span></button>
+    <button class="filter-btn" data-filter="reached">已触达</button>
+    <button class="filter-btn" data-filter="demand">有需求</button>
+    <button class="filter-btn" data-filter="keyperson">关键人</button>
+    <button class="filter-btn" data-filter="wechat">已加微</button>
+    <button class="filter-btn" data-filter="gradeA">A级</button>
+  </div>
+  <div class="action-row">
+    <button class="action-btn btn-export" onclick="exportCSV()">📤 导出CSV</button>
+    <button class="action-btn btn-clear" onclick="clearAll()">🗑️ 清空</button>
+  </div>
 </div>
-<div class="footer-bar">
-  <button class="btn-reset" onclick="if(confirm('确定重置所有数据？')){localStorage.removeItem('cf143');location.reload()}">🔄 重置</button>
-  <button class="btn-export" onclick="exportCSV()">📤 导出CSV</button>
-</div>
+
+<div class="list" id="companyList"></div>
+<div class="footer-note">数据本地存储 · 刷新不丢失</div>
+
 <script>
-const N = 30;
-const data = JSON.parse(localStorage.getItem('cf143') || '{{}}');
-function save(){
-  localStorage.setItem('cf143', JSON.stringify(data));
-  updateStats();
+const STORAGE_KEY = 'canton14_3_2026';
+const companies = [
+  {"name":"广东日丰电缆股份有限公司","booths":["14.3A16-17"],"boothStr":"14.3A16-17","boothCount":1},
+  {"name":"浙江泰达微电机有限公司","booths":["14.3A08-09"],"boothStr":"14.3A08-09","boothCount":1},
+  {"name":"杭州鸿世电器股份有限公司","booths":["14.3A10-11","14.3B12-13"],"boothStr":"14.3A10-11 / 14.3B12-13","boothCount":2},
+  {"name":"温州龙华日用电子有限公司","booths":["14.3A12-13","14.3B10-11"],"boothStr":"14.3A12-13 / 14.3B10-11","boothCount":2},
+  {"name":"德力西电气有限公司","booths":["14.3B34-35","14.3C09-10"],"boothStr":"14.3B34-35 / 14.3C09-10","boothCount":2},
+  {"name":"优利德科技（中国）股份有限公司","booths":["14.3B32-33","14.3C11-12"],"boothStr":"14.3B32-33 / 14.3C11-12","boothCount":2},
+  {"name":"长虹塑料集团英派瑞塑料股份有限公司","booths":["14.3C30-31","14.3D12-13"],"boothStr":"14.3C30-31 / 14.3D12-13","boothCount":2},
+  {"name":"深圳市创银科技股份有限公司","booths":["14.3C14-16"],"boothStr":"14.3C14-16","boothCount":1},
+  {"name":"秦山电缆集团有限公司","booths":["14.3C06-07"],"boothStr":"14.3C06-07","boothCount":1},
+  {"name":"明珠电气股份有限公司","booths":["14.3C38-39"],"boothStr":"14.3C38-39","boothCount":1},
+  {"name":"上海永继电气股份有限公司","booths":["14.3C32-33","14.3D10-11"],"boothStr":"14.3C32-33 / 14.3D10-11","boothCount":2},
+  {"name":"武汉高德智感科技有限公司","booths":["14.3D28-29","14.3E16-17"],"boothStr":"14.3D28-29 / 14.3E16-17","boothCount":2},
+  {"name":"广东金悦诚蓄电池有限公司","booths":["14.3D01-02"],"boothStr":"14.3D01-02","boothCount":1},
+  {"name":"常丰线缆有限公司","booths":["14.3D33-34","14.3E10-11"],"boothStr":"14.3D33-34 / 14.3E10-11","boothCount":2},
+  {"name":"三友联众集团股份有限公司","booths":["14.3E14-15"],"boothStr":"14.3E14-15","boothCount":1},
+  {"name":"福建省闽华电源股份有限公司","booths":["14.3E40-41"],"boothStr":"14.3E40-41","boothCount":1},
+  {"name":"汉威科技集团股份有限公司","booths":["14.3E08-09"],"boothStr":"14.3E08-09","boothCount":1},
+  {"name":"浙江开民电器有限公司","booths":["14.3E23-24"],"boothStr":"14.3E23-24","boothCount":1},
+  {"name":"宁波凯峰电器有限公司","booths":["14.3E31-33","14.3F12-13"],"boothStr":"14.3E31-33 / 14.3F12-13","boothCount":2},
+  {"name":"浙江科瑞普电气有限公司","booths":["14.3E34-35","14.3F10-11"],"boothStr":"14.3E34-35 / 14.3F10-11","boothCount":2},
+  {"name":"深圳市华盛昌科技实业股份有限公司","booths":["14.3F38-39"],"boothStr":"14.3F38-39","boothCount":1},
+  {"name":"江西恒力电池科技有限公司","booths":["14.3F04-05"],"boothStr":"14.3F04-05","boothCount":1},
+  {"name":"上海起帆电缆股份有限公司","booths":["14.3F01-02"],"boothStr":"14.3F01-02","boothCount":1},
+  {"name":"河南金水电缆集团有限公司","booths":["14.3F33-34","14.3G10-11"],"boothStr":"14.3F33-34 / 14.3G10-11","boothCount":2},
+  {"name":"宁波唯尔电器有限公司","booths":["14.3F31-32","14.3G12-13"],"boothStr":"14.3F31-32 / 14.3G12-13","boothCount":2},
+  {"name":"河南通达电缆股份有限公司","booths":["14.3G18-19"],"boothStr":"14.3G18-19","boothCount":1},
+  {"name":"泰力实业有限公司","booths":["14.3H33-34","14.3I10-11"],"boothStr":"14.3H33-34 / 14.3I10-11","boothCount":2},
+  {"name":"浙江特伦斯电气有限公司","booths":["14.3H18-19"],"boothStr":"14.3H18-19","boothCount":1},
+  {"name":"浙江天齐电气有限公司","booths":["14.3I32-33","14.3J12-13"],"boothStr":"14.3I32-33 / 14.3J12-13","boothCount":2},
+  {"name":"温州益坤电气股份有限公司","booths":["14.3J18"],"boothStr":"14.3J18","boothCount":1}
+];
+
+// Booth section color
+const sectionColor = {'A':'#e3f2fd','B':'#e8f5e9','C':'#fff3e0','D':'#f3e5f5','E':'#e0f7fa','F':'#fce4ec','G':'#f1f8e9','H':'#fffdf0','I':'#e8eaf6','J':'#efebe9'};
+
+let records = {};
+let currentFilter = 'all';
+let searchText = '';
+
+function getSection(booth) {
+  const m = booth.match(/14\.3([A-Z])/);
+  return m ? m[1] : '';
 }
-function updateStats(){
-  let r=0,d=0,k=0,w=0;
-  for(let i=0;i<N;i++){
-    if(data['r'+i]) r++; if(data['d'+i]) d++;
-    if(data['k'+i]) k++; if(data['w'+i]) w++;
+
+function load() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  records = saved ? JSON.parse(saved) : {};
+}
+
+function save() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+}
+
+function getRec(idx) {
+  if (!records[idx]) {
+    records[idx] = { reached: false, demand: false, keyperson: false, wechat: false, grade: '' };
   }
-  document.getElementById('s1').textContent=r;
-  document.getElementById('s2').textContent=d;
-  document.getElementById('s3').textContent=k;
-  document.getElementById('s4').textContent=w;
+  return records[idx];
 }
-function setRating(idx, grade){
-  ['A','B','C','D'].forEach(g=>{
-    const el=document.querySelector('.rating-stars[data-v="'+idx+'"] span:nth-child('+{'A':1,'B':2,'C':3,'D':4}[grade]+')');
-    if(el) el.className = g===grade ? 'active'+grade : '';
+
+function stats() {
+  let r=0,d=0,k=0,w=0,a=0;
+  companies.forEach((c,i) => {
+    const rec = records[i] || {};
+    if(rec.reached) r++;
+    if(rec.demand) d++;
+    if(rec.keyperson) k++;
+    if(rec.wechat) w++;
+    if(rec.grade==='A') a++;
   });
-  data['g'+idx]=grade;
-  document.getElementById('rd'+idx).textContent='评级: '+grade;
+  document.getElementById('s-reached').textContent = r;
+  document.getElementById('s-demand').textContent = d;
+  document.getElementById('s-key').textContent = k;
+  document.getElementById('s-wechat').textContent = w;
+  document.getElementById('s-gradea').textContent = a;
+  document.getElementById('f-all').textContent = companies.length;
+}
+
+function render() {
+  const list = document.getElementById('companyList');
+  list.innerHTML = '';
+
+  let lastSection = '';
+  companies.forEach((c, i) => {
+    const section = getSection(c.booths[0]);
+    const rec = getRec(i);
+
+    // filter
+    if (currentFilter === 'reached' && !rec.reached) return;
+    if (currentFilter === 'demand' && !rec.demand) return;
+    if (currentFilter === 'keyperson' && !rec.keyperson) return;
+    if (currentFilter === 'wechat' && !rec.wechat) return;
+    if (currentFilter === 'gradeA' && rec.grade !== 'A') return;
+
+    // search
+    if (searchText && !c.name.includes(searchText) && !c.boothStr.includes(searchText)) return;
+
+    // section label
+    if (section !== lastSection) {
+      const sl = document.createElement('div');
+      sl.className = 'section-label';
+      sl.textContent = `展区 ${section}`;
+      list.appendChild(sl);
+      lastSection = section;
+    }
+
+    const bg = sectionColor[section] || '#fff';
+    const card = document.createElement('div');
+    card.className = 'company-card';
+    card.style.background = bg;
+    card.innerHTML = `
+      <div class="card-top">
+        <div class="company-name">${c.name}</div>
+        <div class="booth-badge">${c.boothStr}</div>
+      </div>
+      <div class="check-row">
+        <label class="check-item"><input type="checkbox" ${rec.reached?'checked':''} onchange="toggle(${i},'reached',this.checked)"> 触达</label>
+        <label class="check-item"><input type="checkbox" ${rec.demand?'checked':''} onchange="toggle(${i},'demand',this.checked)"> 有需求</label>
+        <label class="check-item"><input type="checkbox" ${rec.keyperson?'checked':''} onchange="toggle(${i},'keyperson',this.checked)"> 关键人</label>
+        <label class="check-item"><input type="checkbox" ${rec.wechat?'checked':''} onchange="toggle(${i},'wechat',this.checked)"> 已加微</label>
+      </div>
+      <div class="rating-row">
+        <span class="rating-label">评级：</span>
+        ${['A','B','C','D'].map(g => `<button class="rating-btn ${rec.grade===g?'selected-'+g:''}" onclick="setGrade(${i},'${g}')">${g}</button>`).join('')}
+      </div>`;
+    list.appendChild(card);
+  });
+
+  stats();
+}
+
+function toggle(idx, field, val) {
+  getRec(idx)[field] = val;
   save();
+  stats();
 }
-function doSearch(){
-  const q=document.getElementById('search').value.trim().toLowerCase();
-  document.querySelectorAll('.company-card').forEach(card=>{
-    const name=card.dataset.name.toLowerCase(), booth=card.dataset.booth.toLowerCase();
-    card.classList.toggle('hidden', q && !name.includes(q) && !booth.includes(q));
-  });
+
+function setGrade(idx, grade) {
+  getRec(idx).grade = grade;
+  save();
+  render();
 }
-function setFilter(type, btn){
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.company-card').forEach(card=>card.classList.remove('hidden'));
-  const q=document.getElementById('search').value.trim().toLowerCase();
-  document.querySelectorAll('.company-card').forEach(card=>{
-    const idx=parseInt(card.querySelector('.rating-stars').dataset.v);
-    let show=true;
-    if(type==='reached'&&!data['r'+idx]) show=false;
-    if(type==='hot'&&(!data['d'+idx]||!data['r'+idx])) show=false;
-    if(type==='keyperson'&&(!data['k'+idx]||!data['r'+idx])) show=false;
-    if(type==='wechat'&&(!data['w'+idx]||!data['r'+idx])) show=false;
-    const name=card.dataset.name.toLowerCase(), booth=card.dataset.booth.toLowerCase();
-    if(q && !name.includes(q) && !booth.includes(q)) show=false;
-    card.classList.toggle('hidden',!show);
+
+document.addEventListener('DOMContentLoaded', () => {
+  load();
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.dataset.filter;
+      render();
+    });
   });
-}
-function exportCSV(){
-  const rows=[['展位号','公司名称','触达','有需求','关键人','已加微','评级']];
-  document.querySelectorAll('.company-card').forEach(card=>{
-    const idx=parseInt(card.querySelector('.rating-stars').dataset.v);
-    rows.push([card.dataset.booth, card.dataset.name,
-      data['r'+idx]?'✓':'', data['d'+idx]?'✓':'',
-      data['k'+idx]?'✓':'', data['w'+idx]?'✓':'',
-      data['g'+idx]||'']);
+
+  document.getElementById('searchInput').addEventListener('input', (e) => {
+    searchText = e.target.value.trim();
+    render();
   });
-  let csv=''; rows.forEach(r=>csv+=r.map(v=>'"'+v.replace(/"/g,'""')+'"').join(',')+'\n');
-  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download='14.3馆拜访记录_'+new Date().toISOString().slice(0,10)+'.csv';
+
+  render();
+});
+
+function exportCSV() {
+  const rows = [['序号','公司名称','展位号','触达','有需求','关键人','已加微','评级']];
+  companies.forEach((c,i) => {
+    const r = records[i] || {};
+    rows.push([i+1, c.name, c.boothStr, r.reached?'是':'', r.demand?'是':'', r.keyperson?'是':'', r.wechat?'是':'', r.grade]);
+  });
+  let csv = rows.map(r => r.map(v => '"'+v+'"').join(',')).join('\n');
+  csv = '\uFEFF' + csv;
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '14.3馆展商拜访记录.csv';
   a.click();
 }
-// init
-document.querySelectorAll('.company-card').forEach(card=>{
-  const idx=parseInt(card.querySelector('.rating-stars').dataset.v);
-  ['r','d','k','w'].forEach(key=>{
-    const cb=document.getElementById(key+idx);
-    if(cb) { cb.checked=!!data[key+idx]; cb.addEventListener('change',save); }
-  });
-  if(data['g'+idx]) setRating(idx, data['g'+idx]);
-});
-updateStats();
+
+function clearAll() {
+  if (!confirm('确定清空所有登记记录？')) return;
+  records = {};
+  save();
+  render();
+}
 </script>
 </body>
 </html>
